@@ -580,7 +580,7 @@ with col2:
 
 if subj_file is not None and src_file is not None:
     if st.button("🚀 Run Matching", type="primary"):
-    placeholder = st.empty()
+      placeholder = st.empty()
 
     # Show base64 GIF
     with placeholder:
@@ -802,6 +802,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
