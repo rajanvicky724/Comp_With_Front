@@ -587,20 +587,17 @@ if subj_file is not None and src_file is not None:
         show_processing_gif()
 
     try:
-        subj = pd.read_excel(subj_file)
-        src = pd.read_excel(src_file)
+    subj = pd.read_excel(subj_file)
+    src = pd.read_excel(src_file)
 
-        subj.columns = subj.columns.str.strip()
-        src.columns = src.columns.str.strip()
-
-            for df in (subj, src):
-                    if "Property Account No" in df.columns:
-                        df["Property Account No"] = (
-                            df["Property Account No"]
-                            .astype(str)
-                            .str.replace(r"\.0$", "", regex=True)
-                            .str.strip()
-                        )
+    for df in (subj, src):
+        if "Property Account No" in df.columns:
+            df["Property Account No"] = (
+                df["Property Account No"]
+                .astype(str)
+                .str.replace(r"\.0$", "", regex=True)
+                .str.strip()
+            )
                     elif "Concat" in df.columns:
                         df["Property Account No"] = (
                             df["Concat"].astype(str).str.extract(r"(\d+)", expand=False)
@@ -802,6 +799,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
