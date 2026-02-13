@@ -348,7 +348,7 @@ if not st.session_state["show_app"]:
                         font-family:'Segoe UI', sans-serif; font-size:14px; text-align:center;">
                 <span style="margin:0 10px;">✔ 300,000+ property owners represented</span>
                 <span style="margin:0 10px;">✔ Coverage across 49 states &amp; Canada</span>
-                <span style="margin:0 10px;">✔ No fee unless we reduce your taxes</span>
+                <span style="margin:0 10px;">✔ Aggressive approach to protesting during all 3 phases of the appeals process</span>
             </div>
             """,
             unsafe_allow_html=True,
@@ -779,5 +779,6 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
