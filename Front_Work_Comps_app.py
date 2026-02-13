@@ -294,7 +294,7 @@ if not st.session_state["show_app"]:
         font-size: 32px;
         font-weight: 700;
         color: #058f3c;
-        margin-top: -25px;
+        margin-top: -35px;
         margin-bottom: 8px;
         text-align: center;
         font-family: "Segoe UI", sans-serif;
@@ -769,6 +769,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
