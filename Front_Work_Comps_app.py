@@ -276,10 +276,21 @@ if "show_app" not in st.session_state:
 
 # ---------- FRONT PAGE ----------
 if not st.session_state["show_app"]:
-    # Global styles including hero background and text
     st.markdown(
         """
         <style>
+        /* Top green strap with logo */
+        .top-strap {
+            background: #058f3c;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .top-strap img {
+            height: 40px;
+        }
+
         .hero-bg {
             background: #f5fff8;
             padding: 40px 0 60px 0;
@@ -309,17 +320,21 @@ if not st.session_state["show_app"]:
         unsafe_allow_html=True,
     )
 
+    # GREEN STRAP WITH LOGO
+    st.markdown(
+        """
+        <div class="top-strap">
+            <img src="logo_oconnor.png" alt="O'Connor & Associates Logo">
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # HERO CONTENT
     st.markdown('<div class="hero-bg">', unsafe_allow_html=True)
 
     col_left, col_center, col_right = st.columns([1, 2, 1])
-
     with col_center:
-        # Logo with horizontal adjustment
-        logo_col1, logo_col2, logo_col3 = st.columns([1.8, 2, 2.5])  # your current setting
-        with logo_col2:
-            st.image("logo_oconnor.png", use_column_width=False)
-
-        # Title + subtitle
         st.markdown(
             """
             <div class="welcome-title">
@@ -328,6 +343,30 @@ if not st.session_state["show_app"]:
             <div class="welcome-subtitle">
                 O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
                 representing 300,000+ clients in 49 states and Canada.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Benefit strip
+        st.markdown(
+            """
+            <div style="margin-top:5px; margin-bottom:20px; color:#444;
+                        font-family:'Segoe UI', sans-serif; font-size:14px; text-align:center;">
+                <span style="margin:0 10px;">✔ 300,000+ property owners represented</span>
+                <span style="margin:0 10px;">✔ Coverage across 49 states &amp; Canada</span>
+                <span style="margin:0 10px;">✔ No fee unless we reduce your taxes</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Trusted line
+        st.markdown(
+            """
+            <div style="margin-top:0px; margin-bottom:25px; font-size:13px; color:#666;
+                        font-family:'Segoe UI', sans-serif; text-align:center;">
+                Trusted by hotels, multifamily, and commercial owners nationwide.
             </div>
             """,
             unsafe_allow_html=True,
@@ -766,3 +805,4 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
