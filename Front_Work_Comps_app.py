@@ -275,11 +275,9 @@ if "show_app" not in st.session_state:
     st.session_state["show_app"] = False
 
 # ---------- FRONT PAGE ----------
-# ---------- FRONT PAGE ----------
 if not st.session_state["show_app"]:
-    # CSS
-st.markdown(
-    """
+    # 1) CSS
+    st.markdown("""
     <style>
     .hero-strap {
         background: #22B84D;
@@ -312,95 +310,49 @@ st.markdown(
         font-family: "Segoe UI", sans-serif;
     }
     </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """, unsafe_allow_html=True)
 
-
-# STRAP + LOGO
-st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
-
-left, center, right = st.columns([1, 2, 1])
-with center:
-    st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
-    st.image("logo_oconnor.png", use_column_width=False)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: #058f3c;
-            margin-top: -25px;
-            margin-bottom: 8px;
-            text-align: center;
-            font-family: "Segoe UI", sans-serif;
-            letter-spacing: 0.5px;
-        }
-        .welcome-subtitle {
-            font-size: 16px;
-            color: #333333;
-            max-width: 700px;
-            margin: 0 auto 15px auto;
-            line-height: 1.5;
-            text-align: center;
-            font-family: "Segoe UI", sans-serif;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # GREEN STRAP WITH LOGO (logo pulled slightly upward)
+    # 2) GREEN STRAP WITH LOGO (logo pulled slightly upward)
     st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
-    left, center, right = st.columns([1.8, 2, 0.7])
+    left, center, right = st.columns([1.8, 2, 0.7])   # adjust to nudge logo left/right
     with center:
         st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
         st.image("logo_oconnor.png", use_column_width=False)
         st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # HERO CONTENT UNDER STRAP
+    # 3) HERO CONTENT UNDER STRAP
     col_left, col_center, col_right = st.columns([1, 2, 1])
     with col_center:
-        st.markdown(
-            """
-            <div class="welcome-title">
-                Welcome to O’Connor &amp; Associates
-            </div>
-            <div class="welcome-subtitle">
-                O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
-                representing 300,000+ clients in 49 states and Canada.
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        st.markdown("""
+        <div class="welcome-title">
+            Welcome to O’Connor &amp; Associates
+        </div>
+        <div class="welcome-subtitle">
+            O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
+            representing 300,000+ clients in 49 states and Canada.
+        </div>
+        """, unsafe_allow_html=True)
 
         # Benefit strip
-        st.markdown(
-            """
-            <div style="margin-top:5px; margin-bottom:20px; color:#444;
-                        font-family:'Segoe UI', sans-serif; font-size:14px; text-align:center;">
-                <span style="margin:0 10px;">✔ 300,000+ property owners represented</span>
-                <span style="margin:0 10px;">✔ Coverage across 49 states &amp; Canada</span>
-                <span style="margin:0 10px;">✔ No fee unless we reduce your taxes</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        st.markdown("""
+        <div style="margin-top:5px; margin-bottom:20px; color:#444;
+                    font-family:'Segoe UI', sans-serif; font-size:14px; text-align:center;">
+            <span style="margin:0 10px;">✔ 300,000+ property owners represented</span>
+            <span style="margin:0 10px;">✔ Coverage across 49 states &amp; Canada</span>
+            <span style="margin:0 10px;">✔ No fee unless we reduce your taxes</span>
+        </div>
+        """, unsafe_allow_html=True)
 
         # Trusted line
-        st.markdown(
-            """
-            <div style="margin-top:0px; margin-bottom:25px; font-size:13px; color:#666;
-                        font-family:'Segoe UI', sans-serif; text-align:center;">
-                Trusted by hotels, multifamily, and commercial owners nationwide.
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        st.markdown("""
+        <div style="margin-top:0px; margin-bottom:25px; font-size:13px; color:#666;
+                    font-family:'Segoe UI', sans-serif; text-align:center;">
+            Trusted by hotels, multifamily, and commercial owners nationwide.
+        </div>
+        """, unsafe_allow_html=True)
 
-        # PROPERTY IMAGES (make sure these filenames exist in your repo)
+        # PROPERTY IMAGES
         img_col1, img_col2, img_col3 = st.columns(3)
         with img_col1:
             st.image("real_estate_building_1.png", caption="Commercial properties", use_column_width=True)
@@ -817,6 +769,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
