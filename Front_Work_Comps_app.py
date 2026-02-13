@@ -276,47 +276,40 @@ if not st.session_state.show_app:
         """
         <style>
         .welcome-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 40px;          /* push whole block up/down */
+            text-align: center;
+            margin-top: 40px;
             font-family: "Segoe UI", sans-serif;
-        }
-        .welcome-logo {
-            margin-bottom: 10px;       /* space between logo and title */
         }
         .welcome-title {
             font-size: 32px;
             font-weight: 700;
             color: #058f3c;
+            margin-top: 10px;
             margin-bottom: 8px;
-            text-align: center;
         }
         .welcome-subtitle {
             font-size: 16px;
             color: #333333;
             max-width: 700px;
-            text-align: center;
+            margin: 0 auto 40px auto;
             line-height: 1.5;
-            margin-bottom: 40px;      /* space before button */
         }
         .welcome-button-wrapper {
-            margin-top: 20px;         /* extra gap above button */
+            margin-top: 10px;
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
-    # center column
     col_left, col_center, col_right = st.columns([1, 2, 1])
     with col_center:
+        # This will load logo_oconnor.png from your repo root
+        st.image("logo_oconnor.png", use_column_width=False)
+
         st.markdown(
             """
             <div class="welcome-wrapper">
-                <div class="welcome-logo">
-                    <img src="logo_oconnor.png" alt="O'Connor & Associates Logo">
-                </div>
                 <div class="welcome-title">
                     Welcome to O’Connor &amp; Associates
                 </div>
@@ -736,5 +729,6 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
