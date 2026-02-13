@@ -271,7 +271,17 @@ def get_val(row, col):
 st.set_page_config(page_title="Comp Matcher", layout="wide")
 
 # --- Simple front page using session_state ---
-if not st.session_state.show_app:
+if "show_app" not in st.session_state:
+    st.session_state["show_app"] = False
+
+if not st.session_state["show_app"]:
+    # front page UI here...
+
+    if st.button("➡️ Proceed to Comparable Matching", type="primary"):
+        st.session_state["show_app"] = True
+        st.experimental_rerun()
+
+    st.stop()
     st.markdown(
         """
         <style>
@@ -729,6 +739,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
