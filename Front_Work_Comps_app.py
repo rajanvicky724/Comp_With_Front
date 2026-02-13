@@ -277,20 +277,36 @@ if "show_app" not in st.session_state:
 # ---------- FRONT PAGE ----------
 # ---------- FRONT PAGE ----------
 if not st.session_state["show_app"]:
-    st.markdown(
-        """
-        <style>
-        .hero-strap {
-            background: #22B84D;
-            padding: 50px 35px 0;
-            border-bottom: 1px solid #1da344;
-            position: relative;
-        }
-        .logo-wrapper {
-            margin-top: -155px;   /* more negative = logo higher */
-            display: flex;
-            justify-content: center;
-        }
+    # CSS
+st.markdown(
+    """
+    <style>
+    .hero-strap {
+        background: #22B84D;
+        padding: 10px 0 4px 0;
+        border-bottom: 1px solid #1da344;
+        position: relative;
+    }
+    .logo-wrapper {
+        margin-top: -40px;   /* try -40px first; adjust up/down as you like */
+        display: flex;
+        justify-content: center;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# STRAP + LOGO
+st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
+
+left, center, right = st.columns([1, 2, 1])
+with center:
+    st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
+    st.image("logo_oconnor.png", use_column_width=False)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
         .welcome-title {
             font-size: 32px;
             font-weight: 700;
@@ -781,6 +797,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
