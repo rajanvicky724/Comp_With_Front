@@ -289,13 +289,13 @@ if not st.session_state["show_app"]:
         border-bottom: 1px solid #1da344;
     }
     .logo-in-strap img {
-        height: 50px;             /* logo size inside strap */
+        height: -10px;             /* logo size inside strap */
     }
     .welcome-title {
         font-size: 32px;
         font-weight: 700;
         color: #058f3c;
-        margin-top: 10px;         /* pulls white area closer to strap */
+        margin-top: -25px;         /* pulls white area closer to strap */
         margin-bottom: 8px;
         text-align: center;
         font-family: "Segoe UI", sans-serif;
@@ -769,6 +769,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
