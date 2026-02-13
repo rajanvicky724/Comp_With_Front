@@ -372,30 +372,6 @@ if not st.session_state["show_app"]:
             unsafe_allow_html=True,
         )
 
-        # Benefit strip (✔ points)
-        st.markdown(
-            """
-            <div style="margin-top:5px; margin-bottom:20px; color:#444;
-                        font-family:'Segoe UI', sans-serif; font-size:14px; text-align:center;">
-                <span style="margin:0 10px;">✔ 300,000+ property owners represented</span>
-                <span style="margin:0 10px;">✔ Coverage across 49 states &amp; Canada</span>
-                <span style="margin:0 10px;">✔ No fee unless we reduce your taxes</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        # Trusted line
-        st.markdown(
-            """
-            <div style="margin-top:0px; margin-bottom:25px; font-size:13px; color:#666;
-                        font-family:'Segoe UI', sans-serif; text-align:center;">
-                Trusted by hotels, multifamily, and commercial owners nationwide.
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
         # Proceed button
         if st.button("➡️ Proceed to Comparable Matching", type="primary"):
             st.session_state["show_app"] = True
@@ -805,4 +781,5 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
