@@ -277,13 +277,36 @@ if "show_app" not in st.session_state:
 # ---------- FRONT PAGE ----------
 if not st.session_state["show_app"]:
     st.markdown(
-        """
-        <style>
-        .hero-strap {
-            background: #22B84D;
-            padding: 25px 0 10px 0;
-            border-bottom: 1px solid #e0f2e9;
-        }
+    """
+    <style>
+    .hero-strap {
+        background: #22B84D;           /* your green */
+        padding: 10px 0 4px 0;
+        border-bottom: 1px solid #1da344;
+        position: relative;
+    }
+    /* wrapper that pulls the logo upward */
+    .logo-wrapper {
+        margin-top: -20px;             /* make this more negative to move logo higher */
+        display: flex;
+        justify-content: center;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# GREEN STRAP
+st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
+
+# use columns only for left/right nudging if needed
+left, center, right = st.columns([1, 2, 1])
+with center:
+    st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
+    st.image("logo_oconnor.png", use_column_width=False)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
         .hero-strap-inner {
             display: flex;
             align-items: center;
@@ -779,6 +802,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
