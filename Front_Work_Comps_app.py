@@ -278,43 +278,24 @@ if "show_app" not in st.session_state:
 if not st.session_state["show_app"]:
     # 1) CSS
     st.markdown("""
-<style>
-.hero-strap {
-    background: #22B84D;      /* green bar */
-    height: 70px;             /* fixed height */
-    position: relative;
-    display: flex;
-    align-items: center;      /* vertically center logo */
-    justify-content: center;  /* horizontally center logo */
-    border-bottom: 1px solid #1da344;
-}
-.logo-in-strap img {
-    height: 50px;             /* adjust logo size if needed */
-}
-.welcome-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: #058f3c;
-    margin-top: 10px;         /* pulls white area closer to strap */
-    margin-bottom: 8px;
-    text-align: center;
-    font-family: "Segoe UI", sans-serif;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# green strap + logo
-st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
-st.markdown('<div class="logo-in-strap">', unsafe_allow_html=True)
-st.image("logo_oconnor.png", use_column_width=False)
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
-
+    <style>
+    .hero-strap {
+        background: #22B84D;      /* green bar */
+        height: 70px;             /* bar height */
+        position: relative;
+        display: flex;
+        align-items: center;      /* vertical center */
+        justify-content: center;  /* horizontal center */
+        border-bottom: 1px solid #1da344;
+    }
+    .logo-in-strap img {
+        height: 50px;             /* logo size inside strap */
+    }
     .welcome-title {
         font-size: 32px;
         font-weight: 700;
         color: #058f3c;
-        margin-top: -35px;
+        margin-top: 10px;         /* pulls white area closer to strap */
         margin-bottom: 8px;
         text-align: center;
         font-family: "Segoe UI", sans-serif;
@@ -332,14 +313,13 @@ st.markdown('</div>', unsafe_allow_html=True)
     </style>
     """, unsafe_allow_html=True)
 
-    # 2) GREEN STRAP WITH LOGO (logo pulled slightly upward)
+    # 2) GREEN STRAP WITH LOGO (logo inside strap)
     st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
-    left, center, right = st.columns([1.8, 2, 0.7])   # adjust to nudge logo left/right
-    with center:
-        st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
-        st.image("logo_oconnor.png", use_column_width=False)
-        st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('<div class="logo-in-strap">', unsafe_allow_html=True)
+    st.image("logo_oconnor.png", use_column_width=False)
     st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
 
     # 3) HERO CONTENT UNDER STRAP
     col_left, col_center, col_right = st.columns([1, 2, 1])
@@ -789,6 +769,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
