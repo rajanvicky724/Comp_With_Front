@@ -295,7 +295,7 @@ if not st.session_state["show_app"]:
         font-size: 32px;
         font-weight: 700;
         color: #058f3c;
-        margin-top: -25px;         /* pulls white area closer to strap */
+        margin-top: -55px;         /* pulls white area closer to strap */
         margin-bottom: 8px;
         text-align: center;
         font-family: "Segoe UI", sans-serif;
@@ -322,7 +322,7 @@ if not st.session_state["show_app"]:
 
 
     # 3) HERO CONTENT UNDER STRAP
-    col_left, col_center, col_right = st.columns([1, 2, 1])
+    col_left, col_center, col_right = st.columns([1.9, 2, 0.7])
     with col_center:
         st.markdown("""
         <div class="welcome-title">
@@ -769,6 +769,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
