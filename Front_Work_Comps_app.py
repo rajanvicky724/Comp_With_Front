@@ -580,10 +580,15 @@ with col2:
 
 if subj_file is not None and src_file is not None:
     if st.button("🚀 Run Matching", type="primary"):
-        with st.spinner("Processing..."):
-            try:
-                subj = pd.read_excel(subj_file)
-                src = pd.read_excel(src_file)
+    placeholder = st.empty()
+
+    # Show base64 GIF
+    with placeholder:
+        show_processing_gif()
+
+    try:
+        subj = pd.read_excel(subj_file)
+        src = pd.read_excel(src_file)
 
                 subj.columns = subj.columns.str.strip()
                 src.columns = src.columns.str.strip()
@@ -778,6 +783,7 @@ if subj_file is not None and src_file is not None:
 
                 df_final = pd.DataFrame(results)
 
+                placeholder.empty()
                 st.success(f"✅ Done! Processed {total_subj} subjects.")
                 st.dataframe(df_final.head())
 
@@ -796,6 +802,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
