@@ -315,7 +315,7 @@ if not st.session_state["show_app"]:
     with strap_col_center:
         st.image("logo_oconnor.png", use_column_width=False)
 
-    col_left, col_center, col_right = st.columns([1, 2, 1])
+    col_left, col_center, col_right = st.columns([1, 1, 1])
     with col_center:
         st.markdown(
             """
@@ -771,3 +771,4 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
