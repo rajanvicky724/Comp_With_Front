@@ -288,14 +288,34 @@ st.markdown(
         position: relative;
     }
     .logo-wrapper {
-        margin-top: -40px;   /* try -40px first; adjust up/down as you like */
+        margin-top: -40px;   /* more negative = logo higher */
         display: flex;
         justify-content: center;
+    }
+    .welcome-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #058f3c;
+        margin-top: 15px;
+        margin-bottom: 8px;
+        text-align: center;
+        font-family: "Segoe UI", sans-serif;
+        letter-spacing: 0.5px;
+    }
+    .welcome-subtitle {
+        font-size: 16px;
+        color: #333333;
+        max-width: 700px;
+        margin: 0 auto 15px auto;
+        line-height: 1.5;
+        text-align: center;
+        font-family: "Segoe UI", sans-serif;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
 
 # STRAP + LOGO
 st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
@@ -797,6 +817,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
