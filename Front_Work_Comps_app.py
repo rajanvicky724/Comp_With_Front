@@ -277,42 +277,38 @@ if "show_app" not in st.session_state:
 # ---------- FRONT PAGE ----------
 # ---------- FRONT PAGE ----------
 if not st.session_state["show_app"]:
-    st.markdown(
-        """
-        <style>
-        /* Light green strap across top */
-        .hero-strap {
-            background: #f5fff8;
-            padding: 30px 0 15px 0;
-            border-bottom: 1px solid #e0f2e9;
-        }
-        .hero-strap-inner {
-            display: flex;
-            align-items: center;
-            justify-content: center;  /* centers logo */
-        }
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: #058f3c;
-            margin-top: 10px;
-            margin-bottom: 8px;
-            text-align: center;
-            font-family: "Segoe UI", sans-serif;
-            letter-spacing: 0.5px;
-        }
-        .welcome-subtitle {
-            font-size: 16px;
-            color: #333333;
-            max-width: 700px;
-            margin: 0 auto 15px auto;
-            line-height: 1.5;
-            text-align: center;
-            font-family: "Segoe UI", sans-serif;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
+    # STRAP WITH ADJUSTABLE LOGO POSITION
+st.markdown(
+    """
+    <style>
+    .hero-strap {
+        background: #f5fff8;
+        padding: 10px 0 4px 0;
+        border-bottom: 1px solid #e0f2e9;
+    }
+    .hero-strap-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
+
+# change [x, y, z] to move logo:
+#   bigger left value -> pushes logo right
+#   bigger right value -> pushes logo left
+left, center, right = st.columns([1, 2, 1])
+
+with center:
+    st.markdown('<div class="hero-strap-inner">', unsafe_allow_html=True)
+    st.image("logo_oconnor.png", use_column_width=False)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
     )
 
     # STRAP WITH LOGO CENTERED
@@ -773,6 +769,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
