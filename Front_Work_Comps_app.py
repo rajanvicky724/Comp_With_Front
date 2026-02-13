@@ -279,17 +279,9 @@ if not st.session_state["show_app"]:
     st.markdown(
         """
         <style>
-        /* Top green strap bar */
-        .top-strap {
-            background: #058f3c;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
         .hero-bg {
             background: #f5fff8;
-            padding: 40px 0 60px 0;
+            padding: 30px 0 60px 0;
             border-bottom: 1px solid #e0f2e9;
         }
         .welcome-title {
@@ -316,15 +308,12 @@ if not st.session_state["show_app"]:
         unsafe_allow_html=True,
     )
 
-    # GREEN STRAP WITH LOGO (Streamlit image inside a container)
+    # LIGHT GREEN STRAP WITH LOGO INSIDE
+    st.markdown('<div class="hero-bg">', unsafe_allow_html=True)
+
     strap_col_left, strap_col_center, strap_col_right = st.columns([1, 2, 1])
     with strap_col_center:
-        st.markdown('<div class="top-strap">', unsafe_allow_html=True)
         st.image("logo_oconnor.png", use_column_width=False)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    # HERO CONTENT
-    st.markdown('<div class="hero-bg">', unsafe_allow_html=True)
 
     col_left, col_center, col_right = st.columns([1, 2, 1])
     with col_center:
@@ -365,7 +354,7 @@ if not st.session_state["show_app"]:
             unsafe_allow_html=True,
         )
 
-        # Property images – make sure these filenames exist in your repo
+        # Property images – update filenames to match your repo
         img_col1, img_col2, img_col3 = st.columns(3)
         with img_col1:
             st.image("real_estate_building_1.png", caption="Commercial properties", use_column_width=True)
@@ -380,7 +369,7 @@ if not st.session_state["show_app"]:
     st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
 
-# ---------- MAIN APP (unchanged from your previous version) ----------
+# ---------- MAIN APP (unchanged) ----------
 
 st.markdown(
     """
@@ -782,6 +771,3 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
-
-
-
