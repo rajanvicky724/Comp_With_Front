@@ -269,22 +269,53 @@ def get_val(row, col):
 # ==========================================
 
 st.set_page_config(page_title="Comp Matcher", layout="wide")
-st.set_page_config(page_title="Comp Matcher", layout="wide")
 
 # --- Simple front page using session_state ---
 if "show_app" not in st.session_state:
     st.session_state.show_app = False
 
 if not st.session_state.show_app:
-    st.markdown("""
-    <h1 style="text-align:center;">🏙️ Comparable Matcher</h1>
-    <p style="text-align:center; font-size:16px;">
-        Upload subject and data source files, then automatically find the best property or hotel comparables
-        based on distance, class, value and size.
-    </p>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        """
+        <style>
+        .welcome-container {
+            text-align: center;
+            padding-top: 60px;
+            font-family: "Segoe UI", sans-serif;
+        }
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #058f3c;   /* O'Connor green */
+            margin-bottom: 12px;
+        }
+        .welcome-subtitle {
+            font-size: 16px;
+            color: #333333;
+            max-width: 700px;
+            margin: 0 auto 24px auto;
+            line-height: 1.5;
+        }
+        .welcome-logo {
+            margin-bottom: 24px;
+        }
+        </style>
 
-    if st.button("➡️ Proceed to Matching", type="primary"):
+        <div class="welcome-container">
+            <div class="welcome-logo">
+                <img src="https://agi-prod-file-upload-public-main-use1.s3.amazonaws.com/9b2f4b54-8c4e-4a8a-9a9a-0b07b2c9a7f9" alt="O'Connor & Associates Logo">
+            </div>
+            <div class="welcome-title">Welcome to O’Connor &amp; Associates</div>
+            <div class="welcome-subtitle">
+                O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
+                representing 300,000+ clients in 49 states and Canada.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    if st.button("➡️ Proceed to Comparable Matching", type="primary"):
         st.session_state.show_app = True
         st.experimental_rerun()
 
@@ -314,7 +345,7 @@ st.markdown(
     """
     <style>
     .main-header {
-        background: linear-gradient(90deg, #1f4e79, #2980b9);
+        background: linear-gradient(90deg, #058f3c, #07b64c);
         color: white;
         padding: 12px 18px;
         border-radius: 8px;
