@@ -590,8 +590,8 @@ if subj_file is not None and src_file is not None:
         subj = pd.read_excel(subj_file)
         src = pd.read_excel(src_file)
 
-                subj.columns = subj.columns.str.strip()
-                src.columns = src.columns.str.strip()
+        subj.columns = subj.columns.str.strip()
+        src.columns = src.columns.str.strip()
 
                 for df in (subj, src):
                     if "Property Account No" in df.columns:
@@ -802,6 +802,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
