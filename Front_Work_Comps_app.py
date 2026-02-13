@@ -58,17 +58,17 @@ def unique_ok(subject, candidate, chosen_comps, is_hotel):
     for a, b in pairs:
         if norm(a.get("Property Account No", "")) == norm(b.get("Property Account No", "")):
             return False
-        if len(get_prefix_6(a.get("Owner Name/ LLC Name", ""))) >= 4 and \\
+        if len(get_prefix_6(a.get("Owner Name/ LLC Name", ""))) >= 4 and \
            get_prefix_6(a.get("Owner Name/ LLC Name", "")) == get_prefix_6(b.get("Owner Name/ LLC Name", "")):
             return False
         if is_hotel:
-            if len(get_prefix_6(a.get("Hotel Name", ""))) >= 4 and \\
+            if len(get_prefix_6(a.get("Hotel Name", ""))) >= 4 and \
                get_prefix_6(a.get("Hotel Name", "")) == get_prefix_6(b.get("Hotel Name", "")):
                 return False
-            if len(get_prefix_6(a.get("Owner Street Address", ""))) >= 4 and \\
+            if len(get_prefix_6(a.get("Owner Street Address", ""))) >= 4 and \
                get_prefix_6(a.get("Owner Street Address", "")) == get_prefix_6(b.get("Owner Street Address", "")):
                 return False
-        if len(get_prefix_6(a.get("Property Address", ""))) >= 4 and \\
+        if len(get_prefix_6(a.get("Property Address", ""))) >= 4 and \
            get_prefix_6(a.get("Property Address", "")) == get_prefix_6(b.get("Property Address", "")):
             return False
     return True
@@ -177,9 +177,9 @@ def find_comps(
 
         is_radius = dist_miles <= max_radius_miles
         is_zip = str(srow.get("Property Zip Code")) == str(crow.get("Property Zip Code"))
-        is_city = str(srow.get("Property City", "")).strip().lower() == \\
+        is_city = str(srow.get("Property City", "")).strip().lower() == \
                   str(crow.get("Property City", "")).strip().lower()
-        is_county = str(srow.get("Property County", "")).strip().lower() == \\
+        is_county = str(srow.get("Property County", "")).strip().lower() == \
                     str(crow.get("Property County", "")).strip().lower()
 
         if use_strict_distance:
@@ -276,83 +276,94 @@ if "show_app" not in st.session_state:
 
 # ---------- FRONT PAGE ----------
 if not st.session_state["show_app"]:
-    # 1) CSS
-    st.markdown("""
-    <style>
-    .hero-strap {
-        background: #22B84D;
-        padding: 50px  20px 0;
-        border-bottom: 1px solid #1da344;
-        position: relative;
-    }
-    .logo-wrapper {
-        margin-top: -60px;   /* more negative = logo higher */
-        display: flex;
-        justify-content: center;
-    }
-    .welcome-title {
-        font-size: 32px;
-        font-weight: 700;
-        color: #058f3c;
-        margin-top: -35px;
-        margin-bottom: 8px;
-        text-align: center;
-        font-family: "Segoe UI", sans-serif;
-        letter-spacing: 0.5px;
-    }
-    .welcome-subtitle {
-        font-size: 16px;
-        color: #333333;
-        max-width: 700px;
-        margin: 0 auto 15px auto;
-        line-height: 1.5;
-        text-align: center;
-        font-family: "Segoe UI", sans-serif;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        """
+        <style>
+        .hero-strap {
+            background: #f5fff8;
+            padding: 10px 0 4px 0;
+            border-bottom: 1px solid #e0f2e9;
+        }
+        .hero-strap-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #058f3c;
+            margin-top: 10px;
+            margin-bottom: 8px;
+            text-align: center;
+            font-family: "Segoe UI", sans-serif;
+            letter-spacing: 0.5px;
+        }
+        .welcome-subtitle {
+            font-size: 16px;
+            color: #333333;
+            max-width: 700px;
+            margin: 0 auto 15px auto;
+            line-height: 1.5;
+            text-align: center;
+            font-family: "Segoe UI", sans-serif;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    # 2) GREEN STRAP WITH LOGO (logo pulled slightly upward)
+    # STRAP WITH LOGO (adjust columns to nudge logo)
     st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
-    left, center, right = st.columns([1.8, 2, 0.7])   # adjust to nudge logo left/right
+
+    # change [1, 2, 1] to move logo: bigger first -> move right, bigger last -> move left
+    left, center, right = st.columns([1, 2, 1])
+
     with center:
-        st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
+        st.markdown('<div class="hero-strap-inner">', unsafe_allow_html=True)
         st.image("logo_oconnor.png", use_column_width=False)
         st.markdown('</div>', unsafe_allow_html=True)
+
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # 3) HERO CONTENT UNDER STRAP
+    # HERO CONTENT UNDER STRAP
     col_left, col_center, col_right = st.columns([1, 2, 1])
     with col_center:
-        st.markdown("""
-        <div class="welcome-title">
-            Welcome to O’Connor &amp; Associates
-        </div>
-        <div class="welcome-subtitle">
-            O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
-            representing 300,000+ clients in 49 states and Canada.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            """
+            <div class="welcome-title">
+                Welcome to O’Connor &amp; Associates
+            </div>
+            <div class="welcome-subtitle">
+                O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
+                representing 300,000+ clients in 49 states and Canada.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-        # Benefit strip
-        st.markdown("""
-        <div style="margin-top:5px; margin-bottom:20px; color:#444;
-                    font-family:'Segoe UI', sans-serif; font-size:14px; text-align:center;">
-            <span style="margin:0 10px;">✔ 300,000+ property owners represented</span>
-            <span style="margin:0 10px;">✔ Coverage across 49 states &amp; Canada</span>
-            <span style="margin:0 10px;">✔ No fee unless we reduce your taxes</span>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            """
+            <div style="margin-top:5px; margin-bottom:20px; color:#444;
+                        font-family:'Segoe UI', sans-serif; font-size:14px; text-align:center;">
+                <span style="margin:0 10px;">✔ 300,000+ property owners represented</span>
+                <span style="margin:0 10px;">✔ Coverage across 49 states &amp; Canada</span>
+                <span style="margin:0 10px;">✔ No fee unless we reduce your taxes</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-        # Trusted line
-        st.markdown("""
-        <div style="margin-top:0px; margin-bottom:25px; font-size:13px; color:#666;
-                    font-family:'Segoe UI', sans-serif; text-align:center;">
-            Trusted by hotels, multifamily, and commercial owners nationwide.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            """
+            <div style="margin-top:0px; margin-bottom:25px; font-size:13px; color:#666;
+                        font-family:'Segoe UI', sans-serif; text-align:center;">
+                Trusted by hotels, multifamily, and commercial owners nationwide.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-        # PROPERTY IMAGES
         img_col1, img_col2, img_col3 = st.columns(3)
         with img_col1:
             st.image("real_estate_building_1.png", caption="Commercial properties", use_column_width=True)
@@ -361,7 +372,6 @@ if not st.session_state["show_app"]:
         with img_col3:
             st.image("professional_team_1.png", caption="Tax experts", use_column_width=True)
 
-        # BUTTON
         if st.button("➡️ Proceed to Comparable Matching", type="primary"):
             st.session_state["show_app"] = True
 
@@ -415,7 +425,7 @@ st.markdown(
 st.markdown(
     """
     <div class="main-header">
-      <h1>🏙️ O’CONNOR / Comparable Matcher</h1>
+      <h1>🏙️ Property Tax / Hotel Comp Matcher</h1>
     </div>
     """,
     unsafe_allow_html=True,
@@ -566,12 +576,12 @@ if subj_file is not None and src_file is not None:
                         df["Property Account No"] = (
                             df["Property Account No"]
                             .astype(str)
-                            .str.replace(r"\\.0$", "", regex=True)
+                            .str.replace(r"\.0$", "", regex=True)
                             .str.strip()
                         )
                     elif "Concat" in df.columns:
                         df["Property Account No"] = (
-                            df["Concat"].astype(str).str.extract(r"(\\d+)", expand=False)
+                            df["Concat"].astype(str).str.extract(r"(\d+)", expand=False)
                         )
 
                     if "Hotel class values" in df.columns:
