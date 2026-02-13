@@ -276,40 +276,43 @@ if "show_app" not in st.session_state:
 
 if not st.session_state["show_app"]:
     st.markdown(
+    """
+    <style>
+    .welcome-wrapper {
+        text-align: center;
+        margin-top: 40px;  /* move whole block up/down */
+        font-family: "Segoe UI", sans-serif;
+    }
+    .welcome-logo {
+        margin-bottom: 10px;  /* space between logo and title */
+    }
+    .welcome-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #058f3c;
+        margin-bottom: 8px;
+    }
+    .welcome-subtitle {
+        font-size: 16px;
+        color: #333333;
+        max-width: 700px;
+        margin: 0 auto 30px auto;  /* space before button */
+        line-height: 1.5;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+col_left, col_center, col_right = st.columns([1, 2, 1])
+with col_center:
+    st.markdown(
         """
-        <style>
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: #058f3c;
-            margin-bottom: 8px;
-            text-align: center;
-            font-family: "Segoe UI", sans-serif;
-        }
-        .welcome-subtitle {
-            font-size: 16px;
-            color: #333333;
-            max-width: 700px;
-            margin: 0 auto 40px auto;
-            line-height: 1.5;
-            text-align: center;
-            font-family: "Segoe UI", sans-serif;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # three columns: left (empty), center (text), right (logo)
-    col_left, col_center, col_right = st.columns([1, 2, 1])
-
-    with col_right:
-        # logo on the right
-        st.image("logo_oconnor.png", use_column_width=False)
-
-    with col_center:
-        st.markdown(
-            """
+        <div class="welcome-wrapper">
+            <div class="welcome-logo">
+                <!-- logo top center -->
+                <img src="logo_oconnor.png" alt="O'Connor & Associates Logo">
+            </div>
             <div class="welcome-title">
                 Welcome to O’Connor &amp; Associates
             </div>
@@ -317,14 +320,15 @@ if not st.session_state["show_app"]:
                 O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
                 representing 300,000+ clients in 49 states and Canada.
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-        if st.button("➡️ Proceed to Comparable Matching", type="primary"):
-            st.session_state["show_app"] = True
+    if st.button("➡️ Proceed to Comparable Matching", type="primary"):
+        st.session_state["show_app"] = True
 
-    st.stop()   # IMPORTANT: stop here while on front page
+st.stop()   # IMPORTANT: stop here while on front page
 
 # ==== MAIN APP (sidebar, uploads, matching, etc.) BELOW THIS LINE ====
 
@@ -709,6 +713,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
