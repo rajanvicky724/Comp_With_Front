@@ -271,32 +271,56 @@ def get_val(row, col):
 st.set_page_config(page_title="Comp Matcher", layout="wide")
 
 # --- Simple front page using session_state ---
-if "show_app" not in st.session_state:
-    st.session_state.show_app = False
-
 if not st.session_state.show_app:
-    # center layout
+    st.markdown(
+        """
+        <style>
+        .welcome-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;          /* push whole block up/down */
+            font-family: "Segoe UI", sans-serif;
+        }
+        .welcome-logo {
+            margin-bottom: 10px;       /* space between logo and title */
+        }
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #058f3c;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .welcome-subtitle {
+            font-size: 16px;
+            color: #333333;
+            max-width: 700px;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 40px;      /* space before button */
+        }
+        .welcome-button-wrapper {
+            margin-top: 20px;         /* extra gap above button */
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # center column
     col_left, col_center, col_right = st.columns([1, 2, 1])
     with col_center:
-        # show your attached logo (put logo.jpg in repo or upload via file_uploader)
-        st.image("logo_oconnor.png", caption="O'Connor & Associates Logo", use_column_width=False)
-
         st.markdown(
             """
-            <div style="text-align:center;
-                        font-family:'Segoe UI', sans-serif;
-                        margin-top:10px;">
-                <div style="font-size:32px;
-                            font-weight:700;
-                            color:#058f3c;
-                            margin-bottom:12px;">
+            <div class="welcome-wrapper">
+                <div class="welcome-logo">
+                    <img src="logo_oconnor.png" alt="O'Connor & Associates Logo">
+                </div>
+                <div class="welcome-title">
                     Welcome to O’Connor &amp; Associates
                 </div>
-                <div style="font-size:16px;
-                            color:#333333;
-                            max-width:700px;
-                            margin:0 auto;
-                            line-height:1.5;">
+                <div class="welcome-subtitle">
                     O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
                     representing 300,000+ clients in 49 states and Canada.
                 </div>
@@ -305,6 +329,7 @@ if not st.session_state.show_app:
             unsafe_allow_html=True,
         )
 
+        st.markdown('<div class="welcome-button-wrapper"></div>', unsafe_allow_html=True)
         if st.button("➡️ Proceed to Comparable Matching", type="primary"):
             st.session_state.show_app = True
             st.experimental_rerun()
@@ -711,4 +736,5 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
