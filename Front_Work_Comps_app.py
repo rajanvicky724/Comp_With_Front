@@ -274,13 +274,17 @@ st.set_page_config(page_title="Comp Matcher", layout="wide")
 if "show_app" not in st.session_state:
     st.session_state["show_app"] = False
 
-if "show_app" not in st.session_state:
-    st.session_state["show_app"] = False
-
+# ---------- FRONT PAGE ----------
 if not st.session_state["show_app"]:
+    # Global styles including hero background and text
     st.markdown(
         """
         <style>
+        .hero-bg {
+            background: #f5fff8;
+            padding: 40px 0 60px 0;
+            border-bottom: 1px solid #e0f2e9;
+        }
         .welcome-title {
             font-size: 32px;
             font-weight: 700;
@@ -289,12 +293,13 @@ if not st.session_state["show_app"]:
             margin-bottom: 8px;
             text-align: center;
             font-family: "Segoe UI", sans-serif;
+            letter-spacing: 0.5px;
         }
         .welcome-subtitle {
             font-size: 16px;
             color: #333333;
             max-width: 700px;
-            margin: 0 auto 30px auto;
+            margin: 0 auto 15px auto;
             line-height: 1.5;
             text-align: center;
             font-family: "Segoe UI", sans-serif;
@@ -304,14 +309,17 @@ if not st.session_state["show_app"]:
         unsafe_allow_html=True,
     )
 
+    st.markdown('<div class="hero-bg">', unsafe_allow_html=True)
+
     col_left, col_center, col_right = st.columns([1, 2, 1])
 
     with col_center:
-        # logo – Streamlit serves the file correctly
-        logo_col1, logo_col2, logo_col3 = st.columns([1.8, 2, 2.5])  # adjust to move right/left
+        # Logo with horizontal adjustment
+        logo_col1, logo_col2, logo_col3 = st.columns([1.8, 2, 2.5])  # your current setting
         with logo_col2:
             st.image("logo_oconnor.png", use_column_width=False)
 
+        # Title + subtitle
         st.markdown(
             """
             <div class="welcome-title">
@@ -325,13 +333,58 @@ if not st.session_state["show_app"]:
             unsafe_allow_html=True,
         )
 
+        # Benefit strip (✔ points)
+        st.markdown(
+            """
+            <div style="margin-top:5px; margin-bottom:20px; color:#444;
+                        font-family:'Segoe UI', sans-serif; font-size:14px; text-align:center;">
+                <span style="margin:0 10px;">✔ 300,000+ property owners represented</span>
+                <span style="margin:0 10px;">✔ Coverage across 49 states &amp; Canada</span>
+                <span style="margin:0 10px;">✔ No fee unless we reduce your taxes</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Trusted line
+        st.markdown(
+            """
+            <div style="margin-top:0px; margin-bottom:25px; font-size:13px; color:#666;
+                        font-family:'Segoe UI', sans-serif; text-align:center;">
+                Trusted by hotels, multifamily, and commercial owners nationwide.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Proceed button
         if st.button("➡️ Proceed to Comparable Matching", type="primary"):
             st.session_state["show_app"] = True
 
-    st.stop()   # IMPORTANT: stop here while on front page
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.stop()
 
-# ==== MAIN APP (sidebar, uploads, matching, etc.) BELOW THIS LINE ====
+# ---------- MAIN APP (unchanged from your previous version) ----------
 
+st.markdown(
+    """
+    <style>
+    .page-watermark {
+        position: fixed;
+        bottom: 50px;
+        right: 10px;
+        color: rgba(0, 0, 0, 0.15);
+        font-size: 24px;
+        font-weight: 600;
+        font-family: "Segoe UI", sans-serif;
+        z-index: 1000;
+        pointer-events: none;
+    }
+    </style>
+    <div class="page-watermark">Vignesh</div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown(
     """
@@ -713,26 +766,3 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
