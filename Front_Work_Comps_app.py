@@ -309,7 +309,7 @@ with center:
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
-    )
+    
 
     # STRAP WITH LOGO CENTERED
     st.markdown('<div class="hero-strap"><div class="hero-strap-inner">', unsafe_allow_html=True)
@@ -769,6 +769,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
