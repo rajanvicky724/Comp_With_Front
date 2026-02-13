@@ -425,7 +425,7 @@ st.markdown(
 st.markdown(
     """
     <div class="main-header">
-      <h1>🏙️ O’Connor Property Tax Reduction / Comparable Matcher</h1>
+      <h1>🏙️ O’CONNOR / Comparable Matcher</h1>
     </div>
     """,
     unsafe_allow_html=True,
@@ -779,6 +779,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
