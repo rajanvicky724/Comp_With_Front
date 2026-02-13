@@ -275,49 +275,39 @@ if "show_app" not in st.session_state:
     st.session_state.show_app = False
 
 if not st.session_state.show_app:
-    st.markdown(
-        """
-        <style>
-        .welcome-container {
-            text-align: center;
-            padding-top: 60px;
-            font-family: "Segoe UI", sans-serif;
-        }
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: #058f3c;   /* O'Connor green */
-            margin-bottom: 12px;
-        }
-        .welcome-subtitle {
-            font-size: 16px;
-            color: #333333;
-            max-width: 700px;
-            margin: 0 auto 24px auto;
-            line-height: 1.5;
-        }
-        .welcome-logo {
-            margin-bottom: 24px;
-        }
-        </style>
+    # center layout
+    col_left, col_center, col_right = st.columns([1, 2, 1])
+    with col_center:
+        # show your attached logo (put logo.jpg in repo or upload via file_uploader)
+        st.image("logo_oconnor.png", caption="O'Connor & Associates Logo", use_column_width=False)
 
-        <div class="welcome-container">
-            <div class="welcome-logo">
-                <img src="https://agi-prod-file-upload-public-main-use1.s3.amazonaws.com/9b2f4b54-8c4e-4a8a-9a9a-0b07b2c9a7f9" alt="O'Connor & Associates Logo">
+        st.markdown(
+            """
+            <div style="text-align:center;
+                        font-family:'Segoe UI', sans-serif;
+                        margin-top:10px;">
+                <div style="font-size:32px;
+                            font-weight:700;
+                            color:#058f3c;
+                            margin-bottom:12px;">
+                    Welcome to O’Connor &amp; Associates
+                </div>
+                <div style="font-size:16px;
+                            color:#333333;
+                            max-width:700px;
+                            margin:0 auto;
+                            line-height:1.5;">
+                    O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
+                    representing 300,000+ clients in 49 states and Canada.
+                </div>
             </div>
-            <div class="welcome-title">Welcome to O’Connor &amp; Associates</div>
-            <div class="welcome-subtitle">
-                O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
-                representing 300,000+ clients in 49 states and Canada.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+            """,
+            unsafe_allow_html=True,
+        )
 
-    if st.button("➡️ Proceed to Comparable Matching", type="primary"):
-        st.session_state.show_app = True
-        st.experimental_rerun()
+        if st.button("➡️ Proceed to Comparable Matching", type="primary"):
+            st.session_state.show_app = True
+            st.experimental_rerun()
 
     st.stop()   # stops here until user clicks Proceed
 
@@ -721,3 +711,4 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
