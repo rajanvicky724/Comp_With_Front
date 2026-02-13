@@ -287,7 +287,7 @@ if not st.session_state["show_app"]:
             position: relative;
         }
         .logo-wrapper {
-            margin-top: -55px;   /* more negative = logo higher */
+            margin-top: -155px;   /* more negative = logo higher */
             display: flex;
             justify-content: center;
         }
@@ -781,6 +781,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
