@@ -311,7 +311,7 @@ with col_center:
         <div class="welcome-wrapper">
             <div class="welcome-logo">
                 <!-- logo top center -->
-                <img src="logo_oconnor.png" alt="O'Connor & Associates Logo">
+                st.image("logo_oconnor.png", use_column_width=False)
             </div>
             <div class="welcome-title">
                 Welcome to O’Connor &amp; Associates
@@ -713,6 +713,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
