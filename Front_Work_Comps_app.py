@@ -282,7 +282,7 @@ if not st.session_state["show_app"]:
         <style>
         .hero-strap {
             background: #22B84D;
-            padding: 10px 0 4px 0;
+            padding: 25px 10px 0;
             border-bottom: 1px solid #1da344;
             position: relative;
         }
@@ -781,6 +781,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
