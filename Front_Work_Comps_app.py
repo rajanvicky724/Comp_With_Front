@@ -278,17 +278,14 @@ if not st.session_state["show_app"]:
     st.markdown(
         """
         <style>
-        .welcome-wrapper {
-            text-align: center;
-            margin-top: 40px;
-            font-family: "Segoe UI", sans-serif;
-        }
         .welcome-title {
             font-size: 32px;
             font-weight: 700;
             color: #058f3c;
             margin-top: 10px;
             margin-bottom: 8px;
+            text-align: center;
+            font-family: "Segoe UI", sans-serif;
         }
         .welcome-subtitle {
             font-size: 16px;
@@ -296,6 +293,8 @@ if not st.session_state["show_app"]:
             max-width: 700px;
             margin: 0 auto 30px auto;
             line-height: 1.5;
+            text-align: center;
+            font-family: "Segoe UI", sans-serif;
         }
         </style>
         """,
@@ -304,31 +303,28 @@ if not st.session_state["show_app"]:
 
     col_left, col_center, col_right = st.columns([1, 2, 1])
     with col_center:
-    # Logo slightly to the right
-    st.markdown(
-        """
-        <div style="text-align:center; margin-left:60px;">
-            <img src="logo_oconnor.png" alt="O'Connor & Associates Logo">
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+        # logo slightly to the right
+        st.markdown(
+            """
+            <div style="text-align:center; margin-left:60px;">
+                <img src="logo_oconnor.png" alt="O'Connor & Associates Logo">
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-    st.markdown(
-        """
-        <div class="welcome-title">
-            Welcome to O’Connor &amp; Associates
-        </div>
-        <div class="welcome-subtitle">
-            O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
-            representing 300,000+ clients in 49 states and Canada.
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    if st.button("➡️ Proceed to Comparable Matching", type="primary"):
-        st.session_state["show_app"] = True
+        st.markdown(
+            """
+            <div class="welcome-title">
+                Welcome to O’Connor &amp; Associates
+            </div>
+            <div class="welcome-subtitle">
+                O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
+                representing 300,000+ clients in 49 states and Canada.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
         if st.button("➡️ Proceed to Comparable Matching", type="primary"):
             st.session_state["show_app"] = True
@@ -718,6 +714,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
