@@ -58,17 +58,17 @@ def unique_ok(subject, candidate, chosen_comps, is_hotel):
     for a, b in pairs:
         if norm(a.get("Property Account No", "")) == norm(b.get("Property Account No", "")):
             return False
-        if len(get_prefix_6(a.get("Owner Name/ LLC Name", ""))) >= 4 and \
+        if len(get_prefix_6(a.get("Owner Name/ LLC Name", ""))) >= 4 and \\
            get_prefix_6(a.get("Owner Name/ LLC Name", "")) == get_prefix_6(b.get("Owner Name/ LLC Name", "")):
             return False
         if is_hotel:
-            if len(get_prefix_6(a.get("Hotel Name", ""))) >= 4 and \
+            if len(get_prefix_6(a.get("Hotel Name", ""))) >= 4 and \\
                get_prefix_6(a.get("Hotel Name", "")) == get_prefix_6(b.get("Hotel Name", "")):
                 return False
-            if len(get_prefix_6(a.get("Owner Street Address", ""))) >= 4 and \
+            if len(get_prefix_6(a.get("Owner Street Address", ""))) >= 4 and \\
                get_prefix_6(a.get("Owner Street Address", "")) == get_prefix_6(b.get("Owner Street Address", "")):
                 return False
-        if len(get_prefix_6(a.get("Property Address", ""))) >= 4 and \
+        if len(get_prefix_6(a.get("Property Address", ""))) >= 4 and \\
            get_prefix_6(a.get("Property Address", "")) == get_prefix_6(b.get("Property Address", "")):
             return False
     return True
@@ -177,9 +177,9 @@ def find_comps(
 
         is_radius = dist_miles <= max_radius_miles
         is_zip = str(srow.get("Property Zip Code")) == str(crow.get("Property Zip Code"))
-        is_city = str(srow.get("Property City", "")).strip().lower() == \
+        is_city = str(srow.get("Property City", "")).strip().lower() == \\
                   str(crow.get("Property City", "")).strip().lower()
-        is_county = str(srow.get("Property County", "")).strip().lower() == \
+        is_county = str(srow.get("Property County", "")).strip().lower() == \\
                     str(crow.get("Property County", "")).strip().lower()
 
         if use_strict_distance:
@@ -280,22 +280,21 @@ if not st.session_state["show_app"]:
     st.markdown("""
     <style>
     .hero-strap {
-        background: #22B84D;      /* green bar */
-        height: 70px;             /* bar height */
-        position: relative;
-        display: flex;
-        align-items: center;      /* vertical center */
-        justify-content: center;  /* horizontal center */
+        background: #22B84D;
+        padding: 50px  20px 0;
         border-bottom: 1px solid #1da344;
+        position: relative;
     }
-    .logo-in-strap img {
-        height: -10px;             /* logo size inside strap */
+    .logo-wrapper {
+        margin-top: -60px;   /* more negative = logo higher */
+        display: flex;
+        justify-content: center;
     }
     .welcome-title {
         font-size: 32px;
         font-weight: 700;
         color: #058f3c;
-        margin-top: -55px;         /* pulls white area closer to strap */
+        margin-top: -35px;
         margin-bottom: 8px;
         text-align: center;
         font-family: "Segoe UI", sans-serif;
@@ -313,13 +312,14 @@ if not st.session_state["show_app"]:
     </style>
     """, unsafe_allow_html=True)
 
-    # 2) GREEN STRAP WITH LOGO (logo inside strap)
+    # 2) GREEN STRAP WITH LOGO (logo pulled slightly upward)
     st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
-    st.markdown('<div class="logo-in-strap">', unsafe_allow_html=True)
-    st.image("logo_oconnor.png", use_column_width=False)
+    left, center, right = st.columns([1.8, 2, 0.7])   # adjust to nudge logo left/right
+    with center:
+        st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
+        st.image("logo_oconnor.png", use_column_width=False)
+        st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
 
     # 3) HERO CONTENT UNDER STRAP
     col_left, col_center, col_right = st.columns([1, 2, 1])
@@ -566,12 +566,12 @@ if subj_file is not None and src_file is not None:
                         df["Property Account No"] = (
                             df["Property Account No"]
                             .astype(str)
-                            .str.replace(r"\.0$", "", regex=True)
+                            .str.replace(r"\\.0$", "", regex=True)
                             .str.strip()
                         )
                     elif "Concat" in df.columns:
                         df["Property Account No"] = (
-                            df["Concat"].astype(str).str.extract(r"(\d+)", expand=False)
+                            df["Concat"].astype(str).str.extract(r"(\\d+)", expand=False)
                         )
 
                     if "Hotel class values" in df.columns:
@@ -769,35 +769,3 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
