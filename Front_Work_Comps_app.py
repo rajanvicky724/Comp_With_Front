@@ -308,7 +308,7 @@ if not st.session_state["show_app"]:
 
     with col_center:
         # logo – Streamlit serves the file correctly
-        logo_col1, logo_col2, logo_col3 = st.columns([1.4, 2, 2.5])  # adjust to move right/left
+        logo_col1, logo_col2, logo_col3 = st.columns([1.8, 2, 2.5])  # adjust to move right/left
         with logo_col2:
             st.image("logo_oconnor.png", use_column_width=False)
 
@@ -713,6 +713,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
