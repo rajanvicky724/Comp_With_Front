@@ -269,7 +269,69 @@ def get_val(row, col):
 # ==========================================
 
 st.set_page_config(page_title="Comp Matcher", layout="wide")
+# --- UTIL: Loading overlay (CSS + HTML) ---
+def show_loading_overlay(message="Processing your files…"):
+    st.markdown(
+        f"""
+        <style>
+        /* Full page overlay */
+        .loading-overlay {{
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.90);
+            backdrop-filter: blur(2px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }}
+        /* Card */
+        .loading-card {{
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 28px 32px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            border: 1px solid #eef2f5;
+            max-width: 520px;
+        }}
+        /* Spinner */
+        .spinner {{
+            width: 54px; height: 54px;
+            border: 5px solid #e9f7ef;
+            border-top-color: #07b64c;   /* brand green */
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }}
+        @keyframes spin {{
+          to {{ transform: rotate(360deg); }}
+        }}
+        .loading-text-title {{
+            font: 700 18px "Segoe UI", sans-serif;
+            color: #0a3d2b;
+            margin-bottom: 4px;
+        }}
+        .loading-text-sub {{
+            font: 400 13px "Segoe UI", sans-serif;
+            color: #4b5563;
+        }}
+        </style>
 
+        <div class="loading-overlay">
+          <div class="loading-card">
+            <div class="spinner"></div>
+            <div>
+              <div class="loading-text-title">{message}</div>
+              <div class="loading-text-sub">Please wait while we validate and match comparables…</div>
+            </div>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+``
 # --- Front page controller ---
 if "show_app" not in st.session_state:
     st.session_state["show_app"] = False
@@ -779,4 +841,5 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
