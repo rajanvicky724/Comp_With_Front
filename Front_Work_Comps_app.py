@@ -275,48 +275,27 @@ if "show_app" not in st.session_state:
     st.session_state["show_app"] = False
 
 # ---------- FRONT PAGE ----------
+# ---------- FRONT PAGE ----------
 if not st.session_state["show_app"]:
     st.markdown(
-    """
-    <style>
-    .hero-strap {
-        background: #22B84D;           /* your green */
-        padding: 10px 0 4px 0;
-        border-bottom: 1px solid #1da344;
-        position: relative;
-    }
-    /* wrapper that pulls the logo upward */
-    .logo-wrapper {
-        margin-top: -20px;             /* make this more negative to move logo higher */
-        display: flex;
-        justify-content: center;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-# GREEN STRAP
-st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
-
-# use columns only for left/right nudging if needed
-left, center, right = st.columns([1, 2, 1])
-with center:
-    st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
-    st.image("logo_oconnor.png", use_column_width=False)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
-        .hero-strap-inner {
+        """
+        <style>
+        .hero-strap {
+            background: #22B84D;
+            padding: 10px 0 4px 0;
+            border-bottom: 1px solid #1da344;
+            position: relative;
+        }
+        .logo-wrapper {
+            margin-top: -20px;   /* more negative = logo higher */
             display: flex;
-            align-items: center;
             justify-content: center;
         }
         .welcome-title {
             font-size: 32px;
             font-weight: 700;
             color: #058f3c;
-            margin-top: -15px;
+            margin-top: 15px;
             margin-bottom: 8px;
             text-align: center;
             font-family: "Segoe UI", sans-serif;
@@ -336,17 +315,13 @@ st.markdown('</div>', unsafe_allow_html=True)
         unsafe_allow_html=True,
     )
 
-    # STRAP WITH LOGO (adjust columns to nudge logo)
+    # GREEN STRAP WITH LOGO (logo pulled slightly upward)
     st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
-
-    # change [1, 2, 1] to move logo: bigger first -> move right, bigger last -> move left
-    left, center, right = st.columns([1.9, 2, 0.7])
-
+    left, center, right = st.columns([1, 2, 1])
     with center:
-        st.markdown('<div class="hero-strap-inner">', unsafe_allow_html=True)
+        st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
         st.image("logo_oconnor.png", use_column_width=False)
         st.markdown('</div>', unsafe_allow_html=True)
-
     st.markdown('</div>', unsafe_allow_html=True)
 
     # HERO CONTENT UNDER STRAP
@@ -365,6 +340,7 @@ st.markdown('</div>', unsafe_allow_html=True)
             unsafe_allow_html=True,
         )
 
+        # Benefit strip
         st.markdown(
             """
             <div style="margin-top:5px; margin-bottom:20px; color:#444;
@@ -377,6 +353,7 @@ st.markdown('</div>', unsafe_allow_html=True)
             unsafe_allow_html=True,
         )
 
+        # Trusted line
         st.markdown(
             """
             <div style="margin-top:0px; margin-bottom:25px; font-size:13px; color:#666;
@@ -387,6 +364,7 @@ st.markdown('</div>', unsafe_allow_html=True)
             unsafe_allow_html=True,
         )
 
+        # PROPERTY IMAGES (make sure these filenames exist in your repo)
         img_col1, img_col2, img_col3 = st.columns(3)
         with img_col1:
             st.image("real_estate_building_1.png", caption="Commercial properties", use_column_width=True)
@@ -395,6 +373,7 @@ st.markdown('</div>', unsafe_allow_html=True)
         with img_col3:
             st.image("professional_team_1.png", caption="Tax experts", use_column_width=True)
 
+        # BUTTON
         if st.button("➡️ Proceed to Comparable Matching", type="primary"):
             st.session_state["show_app"] = True
 
@@ -802,6 +781,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
