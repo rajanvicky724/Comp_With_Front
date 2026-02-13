@@ -317,7 +317,7 @@ if not st.session_state["show_app"]:
     st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
 
     # change [1, 2, 1] to move logo: bigger first -> move right, bigger last -> move left
-    left, center, right = st.columns([1, 2, 1])
+    left, center, right = st.columns([1, 2, 4])
 
     with center:
         st.markdown('<div class="hero-strap-inner">', unsafe_allow_html=True)
@@ -779,3 +779,4 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
