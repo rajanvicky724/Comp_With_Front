@@ -329,7 +329,6 @@ if not st.session_state["show_app"]:
 
     if st.button("➡️ Proceed to Comparable Matching", type="primary"):
         st.session_state["show_app"] = True
-        )
 
         if st.button("➡️ Proceed to Comparable Matching", type="primary"):
             st.session_state["show_app"] = True
@@ -719,6 +718,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
