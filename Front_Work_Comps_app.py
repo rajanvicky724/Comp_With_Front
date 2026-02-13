@@ -304,25 +304,6 @@ if not st.session_state["show_app"]:
 
 # ==== MAIN APP (sidebar, uploads, matching, etc.) BELOW THIS LINE ====
 
-st.markdown(
-    """
-    <style>
-    .page-watermark {
-        position: fixed;
-        bottom: 50px;
-        right: 10px;
-        color: rgba(0, 0, 0, 0.15);
-        font-size: 24px;
-        font-weight: 600;
-        font-family: "Segoe UI", sans-serif;
-        z-index: 1000;
-        pointer-events: none;
-    }
-    </style>
-    <div class="page-watermark">Vignesh</div>
-    """,
-    unsafe_allow_html=True,
-)
 
 st.markdown(
     """
@@ -704,6 +685,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
