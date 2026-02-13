@@ -275,20 +275,27 @@ if "show_app" not in st.session_state:
     st.session_state["show_app"] = False
 
 # ---------- FRONT PAGE ----------
+# ---------- FRONT PAGE ----------
 if not st.session_state["show_app"]:
     st.markdown(
         """
         <style>
-        .hero-bg {
+        /* Light green strap across top */
+        .hero-strap {
             background: #f5fff8;
-            padding: 30px 0 60px 0;
+            padding: 20px 0 10px 0;
             border-bottom: 1px solid #e0f2e9;
+        }
+        .hero-strap-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;  /* centers logo */
         }
         .welcome-title {
             font-size: 32px;
             font-weight: 700;
             color: #058f3c;
-            margin-top: 10px;
+            margin-top: 20px;
             margin-bottom: 8px;
             text-align: center;
             font-family: "Segoe UI", sans-serif;
@@ -308,13 +315,12 @@ if not st.session_state["show_app"]:
         unsafe_allow_html=True,
     )
 
-    # LIGHT GREEN STRAP WITH LOGO INSIDE
-    st.markdown('<div class="hero-bg">', unsafe_allow_html=True)
+    # STRAP WITH LOGO CENTERED
+    st.markdown('<div class="hero-strap"><div class="hero-strap-inner">', unsafe_allow_html=True)
+    st.image("logo_oconnor.png", use_column_width=False)
+    st.markdown('</div></div>', unsafe_allow_html=True)
 
-    strap_col_left, strap_col_center, strap_col_right = st.columns([1, 2, 1])
-    with strap_col_center:
-        st.image("logo_oconnor.png", use_column_width=False)
-
+    # HERO CONTENT UNDER STRAP
     col_left, col_center, col_right = st.columns([1, 2, 1])
     with col_center:
         st.markdown(
@@ -330,7 +336,6 @@ if not st.session_state["show_app"]:
             unsafe_allow_html=True,
         )
 
-        # Benefit strip
         st.markdown(
             """
             <div style="margin-top:5px; margin-bottom:20px; color:#444;
@@ -343,7 +348,6 @@ if not st.session_state["show_app"]:
             unsafe_allow_html=True,
         )
 
-        # Trusted line
         st.markdown(
             """
             <div style="margin-top:0px; margin-bottom:25px; font-size:13px; color:#666;
@@ -354,7 +358,6 @@ if not st.session_state["show_app"]:
             unsafe_allow_html=True,
         )
 
-        # Property images – update filenames to match your repo
         img_col1, img_col2, img_col3 = st.columns(3)
         with img_col1:
             st.image("real_estate_building_1.png", caption="Commercial properties", use_column_width=True)
@@ -366,7 +369,6 @@ if not st.session_state["show_app"]:
         if st.button("➡️ Proceed to Comparable Matching", type="primary"):
             st.session_state["show_app"] = True
 
-    st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
 
 # ---------- MAIN APP (unchanged) ----------
@@ -771,5 +773,6 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
