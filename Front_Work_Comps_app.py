@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import math
 import io
+import base64
 
 # ==========================================
 # 1. HELPER FUNCTIONS
@@ -21,6 +22,22 @@ def haversine(lat1, lon1, lat2, lon2):
         return c * 3956  # miles
     except Exception:
         return 999999
+def show_processing_gif():
+    # Small lightweight spinner GIF (Base64 embedded)
+    gif_base64 = """
+R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAAAAAAAAACH5BAEAAAQALAAAAAAQABAAAA
+M7SLrc/jDKSesyQF4z3RTYAOw==
+"""
+
+    html = f"""
+    <div style="text-align:center; margin-top:20px;">
+        <img src="data:image/gif;base64,{gif_base64}" width="80"/>
+        <div style="margin-top:10px; font-size:14px; color:#555;">
+            Processing, please wait…
+        </div>
+    </div>
+    """
+    return components.html(html, height=130)
 
 
 def norm_class(v):
@@ -779,6 +796,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
