@@ -303,32 +303,27 @@ if not st.session_state["show_app"]:
 
     col_left, col_center, col_right = st.columns([1, 2, 1])
     with col_center:
-        # logo slightly to the right
-        st.markdown(
-            """
-            <div style="text-align:center; margin-left:60px;">
-                <img src="logo_oconnor.png" alt="O'Connor & Associates Logo">
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    # logo slightly to the right, but still centered block
+    logo_col1, logo_col2, logo_col3 = st.columns([1, 2, 1])
 
-        st.markdown(
-            """
-            <div class="welcome-title">
-                Welcome to O’Connor &amp; Associates
-            </div>
-            <div class="welcome-subtitle">
-                O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
-                representing 300,000+ clients in 49 states and Canada.
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    with logo_col2:
+        st.image("logo_oconnor.png", use_column_width=False)
 
-        if st.button("➡️ Proceed to Comparable Matching", type="primary"):
-            st.session_state["show_app"] = True
+    st.markdown(
+        """
+        <div class="welcome-title">
+            Welcome to O’Connor &amp; Associates
+        </div>
+        <div class="welcome-subtitle">
+            O’Connor &amp; Associates is one of the nation’s leading property tax consulting firms,
+            representing 300,000+ clients in 49 states and Canada.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
+    if st.button("➡️ Proceed to Comparable Matching", type="primary"):
+        st.session_state["show_app"] = True
     st.stop()   # IMPORTANT: stop here while on front page
 
 # ==== MAIN APP (sidebar, uploads, matching, etc.) BELOW THIS LINE ====
@@ -714,6 +709,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
