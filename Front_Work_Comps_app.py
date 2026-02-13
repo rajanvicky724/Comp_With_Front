@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import math
 import io
-import base64
 
 # ==========================================
 # 1. HELPER FUNCTIONS
@@ -22,22 +21,6 @@ def haversine(lat1, lon1, lat2, lon2):
         return c * 3956  # miles
     except Exception:
         return 999999
-def show_processing_gif():
-    # Small lightweight spinner GIF (Base64 embedded)
-    gif_base64 = """
-R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAAAAAAAAACH5BAEAAAQALAAAAAAQABAAAA
-M7SLrc/jDKSesyQF4z3RTYAOw==
-"""
-
-    html = f"""
-    <div style="text-align:center; margin-top:20px;">
-        <img src="data:image/gif;base64,{gif_base64}" width="80"/>
-        <div style="margin-top:10px; font-size:14px; color:#555;">
-            Processing, please wait…
-        </div>
-    </div>
-    """
-    return components.html(html, height=130)
 
 
 def norm_class(v):
@@ -580,24 +563,22 @@ with col2:
 
 if subj_file is not None and src_file is not None:
     if st.button("🚀 Run Matching", type="primary"):
-      placeholder = st.empty()
+        with st.spinner("Processing..."):
+            try:
+                subj = pd.read_excel(subj_file)
+                src = pd.read_excel(src_file)
 
-    # Show base64 GIF
-    with placeholder:
-        show_processing_gif()
+                subj.columns = subj.columns.str.strip()
+                src.columns = src.columns.str.strip()
 
-    try:
-       subj = pd.read_excel(subj_file)
-       src = pd.read_excel(src_file)
-
-       for df in (subj, src):
-        if "Property Account No" in df.columns:
-            df["Property Account No"] = (
-                df["Property Account No"]
-                .astype(str)
-                .str.replace(r"\.0$", "", regex=True)
-                .str.strip()
-            )
+                for df in (subj, src):
+                    if "Property Account No" in df.columns:
+                        df["Property Account No"] = (
+                            df["Property Account No"]
+                            .astype(str)
+                            .str.replace(r"\.0$", "", regex=True)
+                            .str.strip()
+                        )
                     elif "Concat" in df.columns:
                         df["Property Account No"] = (
                             df["Concat"].astype(str).str.extract(r"(\d+)", expand=False)
@@ -780,7 +761,6 @@ if subj_file is not None and src_file is not None:
 
                 df_final = pd.DataFrame(results)
 
-                placeholder.empty()
                 st.success(f"✅ Done! Processed {total_subj} subjects.")
                 st.dataframe(df_final.head())
 
@@ -799,14 +779,4 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
-
-
-
-
-
-
-
-
-
-
 
