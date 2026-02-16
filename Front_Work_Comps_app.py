@@ -861,35 +861,31 @@ if subj_file is not None and src_file is not None:
                     else:
                         row["Subject_Overpaid_Value"] = ""
 
-                    # append once and update progress once
-                    results.append(row)
-                    prog_bar.progress((i + 1) / total_subj)
+                                    # append once and update progress once
+                results.append(row)
+                prog_bar.progress((i + 1) / total_subj)
 
-                # after loop
-                    results.append(row)
-                    prog_bar.progress((i + 1) / total_subj)
+            # after loop
+            status_text.markdown(
+                """
+                <div class="status-card">
+                  <div class="status-title">
+                    <span class="status-pill" style="background:#0b7a3a;">DONE</span>
+                    Matching complete
+                  </div>
+                  <div class="status-body">
+                    ✅ All subjects processed. Scroll down to review the preview table or download the full Excel results.
+                  </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
-# after loop
-    status_text.markdown(
-    """
-    <div class="status-card">
-      <div class="status-title">
-        <span class="status-pill" style="background:#0b7a3a;">DONE</span>
-        Matching complete
-      </div>
-      <div class="status-body">
-        ✅ All subjects processed. Scroll down to review the preview table or download the full Excel results.
-      </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+            df_final = pd.DataFrame(results)
 
-df_final = pd.DataFrame(results)
+            st.success(f"✅ Done! Processed {total_subj} subjects.")
+            st.dataframe(df_final.head())
 
-
-                st.success(f"✅ Done! Processed {total_subj} subjects.")
-                st.dataframe(df_final.head())
 
                 buffer = io.BytesIO()
                 with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
@@ -906,6 +902,7 @@ df_final = pd.DataFrame(results)
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
