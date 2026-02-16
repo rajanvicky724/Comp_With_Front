@@ -694,7 +694,7 @@ if subj_file is not None and src_file is not None:
                             lambda x: -abs(x) if pd.notna(x) else x
                         )
 
-               if is_hotel:
+                if is_hotel:
                     required_cols = ["Property Zip Code", "Class_Num", "VPR", "Rooms"]
                 else:
                     # non‑hotel always needs VPU; size field depends on type
@@ -911,6 +911,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
