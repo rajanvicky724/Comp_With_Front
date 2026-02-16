@@ -707,8 +707,14 @@ if subj_file is not None and src_file is not None:
                 results = []
                 total_subj = len(subj)
                 prog_bar = st.progress(0)
+                status_text = st.empty()
 
                 for i, (_, srow) in enumerate(subj.iterrows()):
+                    # show what is happening
+                    status_text.markdown(
+                        f"Processing **subject {i+1} of {total_subj}** "
+                        f"(Acct: {srow.get('Property Account No', 'N/A')})..."
+                    )
                     comps = find_comps(
                         srow,
                         src,
@@ -751,6 +757,8 @@ if subj_file is not None and src_file is not None:
                             row[f"{prefix}_{metric_field}_Gap"] = ""
 
                     # --- Overpaid calculation (optional) ---
+                    results.append(row)
+                    prog_bar.progress((i + 1) / total_subj)
                     if use_overpaid:
                         comp_metrics = []
                         for k2 in range(max_comps):
@@ -825,6 +833,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
