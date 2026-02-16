@@ -495,9 +495,10 @@ st.markdown(
 st.sidebar.header("⚙️ Configuration")
 
 prop_type = st.sidebar.radio(
+    prop_type = st.sidebar.radio(
     "Property Type",
     ["Hotel", "Apartment", "Office", "Warehouse", "Retail"],
-    help="Hotel uses VPR & Rooms; Apartment uses VPU & Units; others use VPU & GBA."
+    help="Hotel uses VPR & Rooms; Apartment uses VPU & Units; others use VPU & GBA.",
 )
 
 is_hotel = prop_type == "Hotel"
@@ -557,15 +558,23 @@ max_gap_pct_value = st.sidebar.number_input(
     value=50.0,
     step=5.0,
     min_value=0.0,
-    max_value=100.0
+    max_value=100.0,
 ) / 100.0
 
+# dynamic label based on property type
+if prop_type == "Hotel":
+    size_label = "Max Size Gap % (Rooms)"
+elif prop_type == "Apartment":
+    size_label = "Max Size Gap % (Units)"
+else:
+    size_label = "Max Size Gap % (GBA)"
+
 max_gap_pct_size = st.sidebar.number_input(
-    "Max Size Gap % (Rooms or GBA)",
+    size_label,
     value=50.0,
     step=5.0,
     min_value=0.0,
-    max_value=100.0
+    max_value=100.0,
 ) / 100.0
 
 max_comps = st.sidebar.number_input(
@@ -911,6 +920,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
