@@ -556,51 +556,23 @@ use_county_match = st.sidebar.checkbox(
     help="If checked, Same County is used after City in the priority order."
 )
 
-st.sidebar.markdown("### 💰 Main Metric Rules")
+# fixed default rules (hidden from UI)
 if is_hotel:
-    st.sidebar.write("Main Metric: **VPR**")
+    main_metric_name = "VPR"
 else:
-    st.sidebar.write("Main Metric: **VPU**")
+    main_metric_name = "VPU"
 
-max_gap_pct_main = st.sidebar.number_input(
-    "Max Main Metric Gap % (subject vs comp)",
-    value=50.0,
-    step=5.0,
-    min_value=0.0,
-    max_value=100.0
-) / 100.0
+max_gap_pct_main = 0.50    # 50% main metric gap
+max_gap_pct_value = 0.50   # 50% market/total value gap
+max_gap_pct_size = 0.50    # 50% size gap (Rooms / Units / GBA)
 
-st.sidebar.markdown("### 📈 Value & Size Rules")
-max_gap_pct_value = st.sidebar.number_input(
-    "Max Market/Total Value Gap %",
-    value=50.0,
-    step=5.0,
-    min_value=0.0,
-    max_value=100.0,
-) / 100.0
-
-# dynamic label based on property type
-if prop_type == "Hotel":
-    size_label = "Max Size Gap % (Rooms)"
-elif prop_type == "Apartment":
-    size_label = "Max Size Gap % (Units)"
-else:
-    size_label = "Max Size Gap % (GBA)"
-
-max_gap_pct_size = st.sidebar.number_input(
-    size_label,
-    value=50.0,
-    step=5.0,
-    min_value=0.0,
-    max_value=100.0,
-) / 100.0
-
+# only visible control
 max_comps = st.sidebar.number_input(
     "Max Comps per Subject",
     value=3,
     step=1,
     min_value=1,
-    max_value=20
+    max_value=20,
 )
 
 st.sidebar.markdown("### 💸 Overpaid Analysis")
@@ -938,6 +910,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
