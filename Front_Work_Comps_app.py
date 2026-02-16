@@ -538,23 +538,10 @@ is_hotel = prop_type == "Hotel"
 
 use_hotel_class_rule = is_hotel  # True for Hotel, False for others
 
-st.sidebar.markdown("### 📍 Location Rules")
-use_strict_distance = st.sidebar.checkbox(
-    "Strict Distance Filter?",
-    value=True,
-    help="If checked: use Radius → ZIP → City → County. If unchecked: ignore Radius, use ZIP → City → County."
-)
-max_radius = st.sidebar.number_input(
-    "Max Radius (Miles)",
-    value=15.0,
-    step=1.0,
-    min_value=0.0
-)
-use_county_match = st.sidebar.checkbox(
-    "Use County Match (after City)",
-    value=True,
-    help="If checked, Same County is used after City in the priority order."
-)
+# fixed Location Rules (hidden from UI)
+use_strict_distance = True     # always use Radius → ZIP → City → County
+max_radius = 15.0              # miles
+use_county_match = True        # allow Same County after City
 
 # fixed default rules (hidden from UI)
 if is_hotel:
@@ -910,6 +897,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
