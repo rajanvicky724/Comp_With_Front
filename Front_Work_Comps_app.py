@@ -222,28 +222,62 @@ def find_comps(
             (crow, priority, dist_miles, metric_gap, match_type)
         )
 
-    if sort_mode == "Distance Priority":
-        candidates.sort(key=lambda x: (x[1], x[2], -x[3]))
-    else:
-        candidates.sort(key=lambda x: (x[1], -x[3], x[2]))
+    # ---------- NEW SELECTION LOGIC (VPU/VPR only) ----------
+    # candidates = list of (crow, priority, dist_miles, metric_gap, match_type)
 
+    if not candidates:
+        return []
+
+    # subject main metric and value
+    subj_value = srow.get(value_field)
+
+    def market_diff(cand_row):
+        """Absolute market value difference vs subject, for Comp 1 tie‑break."""
+        cv = cand_row.get(value_field)
+        if pd.isna(subj_value) or pd.isna(cv):
+            return float("inf")
+        return abs(float(cv) - float(subj_value))
+
+    # sort by main metric (VPR/VPU) DESC only
+    rows_only = [c[0] for c in candidates]
+    rows_only.sort(key=lambda r: r.get(metric_field, 0.0), reverse=True)
+
+    # --- Comp 1: highest VPU/VPR, value closest to subject ---
+    top_metric = rows_only[0].get(metric_field)
+    top_group = [r for r in rows_only if r.get(metric_field) == top_metric]
+    comp1 = min(top_group, key=market_diff) if top_group else rows_only[0]
+
+    # --- Comp 2: lowest VPU/VPR (bottom) ---
+    comp2 = rows_only[-1]
+
+    # --- Comp 3: middle of descending list ---
+    mid_index = len(rows_only) // 2
+    comp3 = rows_only[mid_index]
+
+    # collect unique comps in order: 1, 2, 3 (skipping duplicates)
     final_comps = []
     chosen_rows = []
 
-    for cand in candidates:
-        crow, priority, dist_miles, metric_gap, match_type = cand
+    for crow in [comp1, comp2, comp3]:
+        if crow is None:
+            continue
         if unique_ok(srow, crow, chosen_rows, is_hotel=is_hotel):
+            # find original candidate tuple to get distance, metric_gap, match_type
+            for c in candidates:
+                if c[0] is crow:
+                    _, priority, dist_miles, metric_gap, match_type = c
+                    break
             ccopy = crow.copy()
             ccopy["Match_Method"] = match_type
             ccopy["Distance_Calc"] = dist_miles if dist_miles != 999 else "N/A"
             ccopy[f"{metric_field}_Diff"] = metric_gap
             final_comps.append(ccopy)
             chosen_rows.append(ccopy)
+
         if len(final_comps) == max_comps:
             break
 
     return final_comps
-
 
 OUTPUT_COLS_HOTEL = [
     "Property Account No", "Hotel Name", "Rooms", "VPR", "Property Address",
@@ -913,6 +947,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
