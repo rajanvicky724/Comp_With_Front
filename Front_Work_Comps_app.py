@@ -502,13 +502,7 @@ prop_type = st.sidebar.radio(
 
 is_hotel = prop_type == "Hotel"
 
-use_hotel_class_rule = False
-if is_hotel:
-    use_hotel_class_rule = st.sidebar.checkbox(
-        "Use Hotel Class Rule",
-        value=True,
-        help="Uncheck to ignore Hotel Class matching logic."
-    )
+use_hotel_class_rule = is_hotel  # True for Hotel, False for others
 
 st.sidebar.markdown("### 📍 Location Rules")
 use_strict_distance = st.sidebar.checkbox(
@@ -919,6 +913,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
