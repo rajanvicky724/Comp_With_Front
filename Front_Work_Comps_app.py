@@ -540,7 +540,7 @@ use_hotel_class_rule = is_hotel  # True for Hotel, False for others
 
 # fixed Location Rules (hidden from UI)
 use_strict_distance = True     # always use Radius → ZIP → City → County
-max_radius = 15.0              # miles
+max_radius = 7.0              # miles
 use_county_match = True        # allow Same County after City
 
 # fixed default rules (hidden from UI)
@@ -579,7 +579,7 @@ with st.sidebar.expander("📏 Matching Rules (read‑only)", expanded=False):
 
         **Location Rule**  
         • Strict Distance Filter = ON (fixed).  
-        • Max Radius: 15 miles.  
+        • Max Radius: 7 miles.  
         • Matching priority: Within radius → Same ZIP → Same City → Same County.
         """
     )
@@ -919,6 +919,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
