@@ -561,6 +561,28 @@ max_comps = st.sidebar.number_input(
     min_value=1,
     max_value=20,
 )
+# Read‑only display of internal rules
+with st.sidebar.expander("📏 Matching Rules (read‑only)", expanded=False):
+    st.markdown(
+        """
+        **Main Metric (VPU / VPR)**  
+        • Comps must have VPU/VPR ≤ subject.  
+        • Allowed band: ±50% around subject (min 50% of subject, max 100% of subject).
+
+        **Market / Value Rule**  
+        • Market/Total value must be within ±50% of subject.
+
+        **Size Rule**  
+        • Hotel: Rooms within ±50% of subject rooms.  
+        • Apartment: Units within ±50% of subject units.  
+        • Office / Warehouse / Retail: GBA within ±50% of subject GBA.
+
+        **Location Rule**  
+        • Strict Distance Filter = ON (fixed).  
+        • Max Radius: 15 miles.  
+        • Matching priority: Within radius → Same ZIP → Same City → Same County.
+        """
+    )
 
 st.sidebar.markdown("### 💸 Overpaid Analysis")
 use_overpaid = st.sidebar.checkbox(
@@ -897,6 +919,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
