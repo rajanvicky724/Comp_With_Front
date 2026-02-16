@@ -867,7 +867,7 @@ if subj_file is not None and src_file is not None:
 
                 # after loop
                     results.append(row)
-    prog_bar.progress((i + 1) / total_subj)
+                    prog_bar.progress((i + 1) / total_subj)
 
 # after loop
 status_text.markdown(
@@ -906,6 +906,7 @@ df_final = pd.DataFrame(results)
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
