@@ -861,7 +861,7 @@ if subj_file is not None and src_file is not None:
                     else:
                         row["Subject_Overpaid_Value"] = ""
 
-                                    # append once and update progress once
+                                        # append once and update progress once
                 results.append(row)
                 prog_bar.progress((i + 1) / total_subj)
 
@@ -902,6 +902,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
