@@ -553,6 +553,64 @@ max_gap_pct_main = 0.50    # 50% main metric gap
 max_gap_pct_value = 0.50   # 50% market/total value gap
 max_gap_pct_size = 0.50    # 50% size gap (Rooms / Units / GBA)
 
+# --- Rule mode: Static vs Dynamic ---
+rule_mode = st.sidebar.radio(
+    "Rule Mode",
+    ["Static", "Dynamic"],
+    help="Static uses standard rules. Dynamic uses Category 1–3 presets.",
+)
+
+category = None
+if rule_mode == "Dynamic":
+    category = st.sidebar.radio(
+        "Dynamic Category",
+        ["Category 1", "Category 2", "Category 3"],
+        help=(
+            "Cat 1: tight Units/Rooms/GBA & value, 10‑mile radius.\n"
+            "Cat 2: wider bands, 15‑mile radius.\n"
+            "Cat 3: widest bands, 15‑mile radius."
+        ),
+    )
+
+# Default STATIC rules (existing standard set)
+if is_hotel:
+    main_metric_name = "VPR"
+else:
+    main_metric_name = "VPU"
+
+if rule_mode == "Static":
+    max_gap_pct_main = 0.50      # 50% main metric band, still enforced
+    max_gap_pct_value = 0.50     # 50% Market/Total value
+    max_gap_pct_size = 0.50      # 50% Units/Rooms/GBA
+    max_radius = 7.0             # 7 miles (your standard)
+    use_strict_distance = True
+    use_county_match = True
+
+else:  # Dynamic categories
+    use_strict_distance = True
+    use_county_match = True
+
+    if category == "Category 1":
+        # ±80% → allowed range = 20% to 180% of subject
+        max_gap_pct_size = 0.80
+        max_gap_pct_value = 0.80
+        max_gap_pct_main = 0.80
+        max_radius = 10.0
+
+    elif category == "Category 2":
+        # ±120%
+        max_gap_pct_size = 1.20
+        max_gap_pct_value = 1.20
+        max_gap_pct_main = 1.20
+        max_radius = 15.0
+
+    else:  # Category 3
+        # ±150%
+        max_gap_pct_size = 1.50
+        max_gap_pct_value = 1.50
+        max_gap_pct_main = 1.50
+        max_radius = 15.0
+
 # only visible control
 max_comps = st.sidebar.number_input(
     "Max Comps per Subject",
@@ -919,6 +977,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
