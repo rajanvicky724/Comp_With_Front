@@ -442,6 +442,47 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+st.markdown(
+    """
+    <style>
+    .status-card {
+        margin-top: 18px;
+        padding: 14px 18px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #e9fff2, #f7fffb);
+        border: 1px solid #c6ebd6;
+        font-family: "Segoe UI", sans-serif;
+        font-size: 13px;
+        color: #123;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .status-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: #0b7a3a;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .status-pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #0b7a3a;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    .status-body {
+        margin-top: 4px;
+        line-height: 1.5;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # ---------- SIDEBAR CONFIG ----------
 
@@ -712,9 +753,20 @@ if subj_file is not None and src_file is not None:
                 for i, (_, srow) in enumerate(subj.iterrows()):
                     # show what is happening
                     status_text.markdown(
-                        f"Processing **subject {i+1} of {total_subj}** "
-                        f"(Acct: {srow.get('Property Account No', 'N/A')})..."
-                    )
+        f"""
+        <div class="status-card">
+          <div class="status-title">
+            <span class="status-pill">RUNNING</span>
+            Matching subjects in the background…
+          </div>
+          <div class="status-body">
+            Processing subject <strong>{i+1} of {total_subj}</strong><br>
+            Account: <strong>{srow.get('Property Account No', 'N/A')}</strong>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
                     comps = find_comps(
                         srow,
@@ -814,9 +866,27 @@ if subj_file is not None and src_file is not None:
                     prog_bar.progress((i + 1) / total_subj)
 
                 # after loop
-                status_text.markdown("✅ Background processing complete. Showing results below.")
+                    results.append(row)
+    prog_bar.progress((i + 1) / total_subj)
 
-                df_final = pd.DataFrame(results)
+# after loop
+status_text.markdown(
+    """
+    <div class="status-card">
+      <div class="status-title">
+        <span class="status-pill" style="background:#0b7a3a;">DONE</span>
+        Matching complete
+      </div>
+      <div class="status-body">
+        ✅ All subjects processed. Scroll down to review the preview table or download the full Excel results.
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+df_final = pd.DataFrame(results)
+
 
                 st.success(f"✅ Done! Processed {total_subj} subjects.")
                 st.dataframe(df_final.head())
@@ -836,6 +906,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
