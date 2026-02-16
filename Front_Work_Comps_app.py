@@ -122,13 +122,19 @@ def find_comps(
     sort_mode: 'Distance Priority' or 'VPR/VPU Gap (lower comp value)'.
     """
 
+        # metric / size / value by property type
     if is_hotel:
         metric_field = "VPR"
         size_field = "Rooms"
         value_field = "Market Value-2023"
     else:
+        # non‑hotel: use prop_type from the row (already added to srow earlier)
+        ptype = srow.get("Property_Type", "").strip().lower()
         metric_field = "VPU"
-        size_field = "GBA"
+        if ptype == "apartment":
+            size_field = "Units"
+        else:  # office, warehouse, retail and any others
+            size_field = "GBA"
         value_field = "Total Market value-2023"
 
     subj_class = srow.get("Class_Num")
@@ -490,11 +496,11 @@ st.sidebar.header("⚙️ Configuration")
 
 prop_type = st.sidebar.radio(
     "Property Type",
-    ["Hotel Property", "Other Property"],
-    help="Hotel Property uses VPR & Rooms; Other Property uses VPU & GBA."
+    ["Hotel", "Apartment", "Office", "Warehouse", "Retail"],
+    help="Hotel uses VPR & Rooms; Apartment uses VPU & Units; others use VPU & GBA."
 )
 
-is_hotel = prop_type == "Hotel Property"
+is_hotel = prop_type == "Hotel"
 
 use_hotel_class_rule = False
 if is_hotel:
@@ -688,10 +694,14 @@ if subj_file is not None and src_file is not None:
                             lambda x: -abs(x) if pd.notna(x) else x
                         )
 
-                if is_hotel:
-                    required_cols = ["Property Zip Code", "Class_Num", "VPR"]
+               if is_hotel:
+                    required_cols = ["Property Zip Code", "Class_Num", "VPR", "Rooms"]
                 else:
-                    required_cols = ["Property Zip Code", "VPU"]
+                    # non‑hotel always needs VPU; size field depends on type
+                    if prop_type == "Apartment":
+                        required_cols = ["Property Zip Code", "VPU", "Units"]
+                    else:  # Office, Warehouse, Retail
+                        required_cols = ["Property Zip Code", "VPU", "GBA"]
 
                 st.subheader("Diagnostics / Hints")
 
@@ -901,6 +911,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
