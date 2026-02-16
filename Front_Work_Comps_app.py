@@ -556,15 +556,6 @@ use_county_match = st.sidebar.checkbox(
     help="If checked, Same County is used after City in the priority order."
 )
 
-sort_mode = st.sidebar.radio(
-    "Choose Comp Based On",
-    ["Distance Priority", "VPR/VPU Gap (lower comp value)"],
-    help=(
-        "Distance Priority: Radius/ZIP/City/County first, then VPR/VPU gap. "
-        "Gap: prefers comps whose VPR/VPU is much lower than the subject."
-    ),
-)
-
 st.sidebar.markdown("### 💰 Main Metric Rules")
 if is_hotel:
     st.sidebar.write("Main Metric: **VPR**")
@@ -947,6 +938,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
