@@ -494,7 +494,6 @@ st.markdown(
 
 st.sidebar.header("⚙️ Configuration")
 
-prop_type = st.sidebar.radio(
     prop_type = st.sidebar.radio(
     "Property Type",
     ["Hotel", "Apartment", "Office", "Warehouse", "Retail"],
@@ -920,6 +919,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
