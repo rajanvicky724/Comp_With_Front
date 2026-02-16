@@ -558,6 +558,40 @@ else:
     overpaid_base_dim = None
 
 # ---------- FILE UPLOADS ----------
+# ---------- INSTRUCTION / RULES BOX ----------
+st.markdown(
+    """
+    <div style="
+        margin-top:10px;
+        margin-bottom:15px;
+        padding:14px 18px;
+        border-radius:8px;
+        background:#f5fff8;
+        border:1px solid #cfe8d9;
+        font-family:'Segoe UI', sans-serif;
+        font-size:13px;
+        color:#234;
+    ">
+      <b>How to use this Comp Matcher</b>
+      <ol style="padding-left:18px; margin-top:8px; margin-bottom:6px;">
+        <li>Select <b>Property Type</b> in the left sidebar (Hotel or Other).</li>
+        <li>Review / adjust the <b>location, metric gap, size and value</b> rules in the sidebar.</li>
+        <li>Prepare two Excel files:
+            Subject file = properties you want comps for,
+            Data Source file = large pool of potential comps.</li>
+        <li>In <b>Step 1: Upload Files</b>, upload the Subject Excel on the left and Data Source Excel on the right.</li>
+        <li>Click <b>🚀 Run Matching</b> and wait for processing to finish.</li>
+        <li>Review the <b>Diagnostics / Hints</b> section for missing columns or null issues.</li>
+        <li>Scroll down to see the preview table and click
+            <b>📥 Download Results (Excel)</b> to save the full output.</li>
+      </ol>
+      <div style="margin-top:4px;">
+        Tip: For best results, include latitude/longitude, ZIP, class and VPR/VPU columns in both files.
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown("### Step 1: Upload Files")
 
@@ -791,6 +825,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
