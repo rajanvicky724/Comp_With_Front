@@ -620,27 +620,98 @@ max_comps = st.sidebar.number_input(
     max_value=20,
 )
 # Read‑only display of internal rules
-with st.sidebar.expander("📏 Matching Rules (read‑only)", expanded=False):
-    st.markdown(
-        """
-        **Main Metric (VPU / VPR)**  
-        • Comps must have VPU/VPR ≤ subject.(Not more than 50% lower)  
-        • Allowed band: ±50% around subject (min 50% of subject, max 100% of subject).
+with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
-        **Market / Value Rule**  
-        • Market/Total value must be within ±50% of subject.
+    if rule_mode == "Static":
+        st.markdown(
+            """
+**Main Metric (VPU / VPR)**  
+• Comps must have VPU/VPR ≤ subject (not more than 50% lower).  
+• Allowed band: ±50% around subject  
+  – Min 50% of subject metric, max 100% of subject metric.
 
-        **Size Rule**  
-        • Hotel: Rooms within ±50% of subject rooms.  
-        • Apartment: Units within ±50% of subject units.  
-        • Office / Warehouse / Retail: GBA within ±50% of subject GBA.
+**Market / Value Rule**  
+• Market/Total value must be within ±50% of subject value  
+  (range: 50% to 150% of subject).
 
-        **Location Rule**  
-        • Strict Distance Filter = ON (fixed).  
-        • Max Radius: 7 miles.  
-        • Matching priority: Within radius → Same ZIP → Same City → Same County.
-        """
-    )
+**Size Rule**  
+• Hotel: Rooms within ±50% of subject rooms.  
+• Apartment: Units within ±50% of subject units.  
+• Office / Warehouse / Retail: GBA within ±50% of subject GBA.
+
+**Location Rule**  
+• Strict Distance Filter: ON.  
+• Max Radius: 7 miles.  
+• Priority: Within radius → Same ZIP → Same City → Same County.
+            """
+        )
+
+    else:  # Dynamic
+        if category == "Category 1":
+            st.markdown(
+                """
+**Dynamic – Category 1**  
+
+**Size Rule (Units / Rooms / GBA)**  
+• ±80% around subject  
+  – Allowed range: 20% to 180% of subject size.
+
+**Market / Value Rule**  
+• ±80% around subject value  
+  – Allowed range: 20% to 180% of subject Market/Total value.
+
+**Main Metric (VPU / VPR)**  
+• VPU/VPR ≤ subject.  
+• ±80% band (20% to 180% of subject metric).  
+
+**Location Rule**  
+• Strict Distance Filter: ON.  
+• Max Radius: 10 miles.  
+• Priority: Within radius → Same ZIP → Same City → Same County.
+                """
+            )
+        elif category == "Category 2":
+            st.markdown(
+                """
+**Dynamic – Category 2**  
+
+**Size Rule (Units / Rooms / GBA)**  
+• ±120% around subject size.
+
+**Market / Value Rule**  
+• ±120% around subject value.
+
+**Main Metric (VPU / VPR)**  
+• VPU/VPR ≤ subject.  
+• ±120% band.
+
+**Location Rule**  
+• Strict Distance Filter: ON.  
+• Max Radius: 15 miles.  
+• Priority: Within radius → Same ZIP → Same City → Same County.
+                """
+            )
+        else:  # Category 3
+            st.markdown(
+                """
+**Dynamic – Category 3**  
+
+**Size Rule (Units / Rooms / GBA)**  
+• ±150% around subject size.
+
+**Market / Value Rule**  
+• ±150% around subject value.
+
+**Main Metric (VPU / VPR)**  
+• VPU/VPR ≤ subject.  
+• ±150% band.
+
+**Location Rule**  
+• Strict Distance Filter: ON.  
+• Max Radius: 15 miles.  
+• Priority: Within radius → Same ZIP → Same City → Same County.
+                """
+            )
 
 st.sidebar.markdown("### 💸 Overpaid Analysis")
 use_overpaid = st.sidebar.checkbox(
@@ -977,6 +1048,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
