@@ -697,7 +697,7 @@ if subj_file is not None and src_file is not None:
                 if len(subj) == 0 or len(src) == 0:
                     st.stop()
 
-                                if is_hotel:
+                if is_hotel:
                     OUTPUT_COLS = OUTPUT_COLS_HOTEL
                     metric_field = "VPR"
                 else:
@@ -836,6 +836,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
