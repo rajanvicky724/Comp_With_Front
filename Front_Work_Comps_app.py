@@ -566,7 +566,7 @@ with st.sidebar.expander("📏 Matching Rules (read‑only)", expanded=False):
     st.markdown(
         """
         **Main Metric (VPU / VPR)**  
-        • Comps must have VPU/VPR ≤ subject.  
+        • Comps must have VPU/VPR ≤ subject.(Not more than 50% lower)  
         • Allowed band: ±50% around subject (min 50% of subject, max 100% of subject).
 
         **Market / Value Rule**  
@@ -919,6 +919,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
