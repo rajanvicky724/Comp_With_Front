@@ -697,7 +697,7 @@ if subj_file is not None and src_file is not None:
                 if len(subj) == 0 or len(src) == 0:
                     st.stop()
 
-                if is_hotel:
+                                if is_hotel:
                     OUTPUT_COLS = OUTPUT_COLS_HOTEL
                     metric_field = "VPR"
                 else:
@@ -705,116 +705,116 @@ if subj_file is not None and src_file is not None:
                     metric_field = "VPU"
 
                 results = []
-total_subj = len(subj)
-prog_bar = st.progress(0)
-status_text = st.empty()
+                total_subj = len(subj)
+                prog_bar = st.progress(0)
+                status_text = st.empty()
 
-for i, (_, srow) in enumerate(subj.iterrows()):
-    # show what is happening
-    status_text.markdown(
-        f"Processing **subject {i+1} of {total_subj}** "
-        f"(Acct: {srow.get('Property Account No', 'N/A')})..."
-    )
+                for i, (_, srow) in enumerate(subj.iterrows()):
+                    # show what is happening
+                    status_text.markdown(
+                        f"Processing **subject {i+1} of {total_subj}** "
+                        f"(Acct: {srow.get('Property Account No', 'N/A')})..."
+                    )
 
-    comps = find_comps(
-        srow,
-        src,
-        is_hotel=is_hotel,
-        use_hotel_class_rule=use_hotel_class_rule,
-        max_radius_miles=max_radius,
-        max_gap_pct_main=max_gap_pct_main,
-        max_gap_pct_value=max_gap_pct_value,
-        max_gap_pct_size=max_gap_pct_size,
-        max_comps=max_comps,
-        use_strict_distance=use_strict_distance,
-        use_county_match=use_county_match,
-        sort_mode=sort_mode,
-    )
+                    comps = find_comps(
+                        srow,
+                        src,
+                        is_hotel=is_hotel,
+                        use_hotel_class_rule=use_hotel_class_rule,
+                        max_radius_miles=max_radius,
+                        max_gap_pct_main=max_gap_pct_main,
+                        max_gap_pct_value=max_gap_pct_value,
+                        max_gap_pct_size=max_gap_pct_size,
+                        max_comps=max_comps,
+                        use_strict_distance=use_strict_distance,
+                        use_county_match=use_county_match,
+                        sort_mode=sort_mode,
+                    )
 
-    row = {}
-    for c in OUTPUT_COLS:
-        row[f"Subject_{c}"] = get_val(srow, c)
+                    row = {}
+                    for c in OUTPUT_COLS:
+                        row[f"Subject_{c}"] = get_val(srow, c)
 
-    for k in range(max_comps):
-        prefix = f"Comp{k+1}"
-        if k < len(comps):
-            crow = comps[k]
-            for c in OUTPUT_COLS:
-                row[f"{prefix}_{c}"] = get_val(crow, c)
-            row[f"{prefix}_Match_Method"] = crow.get("Match_Method", "N/A")
-            d = crow.get("Distance_Calc", "N/A")
-            row[f"{prefix}_Distance_Miles"] = (
-                f"{d:.2f}" if isinstance(d, (int, float)) else d
-            )
-            diff = crow.get(f"{metric_field}_Diff", "")
-            row[f"{prefix}_{metric_field}_Gap"] = (
-                f"{diff:.2f}" if isinstance(diff, (int, float)) else diff
-            )
-        else:
-            for c in OUTPUT_COLS:
-                row[f"{prefix}_{c}"] = ""
-            row[f"{prefix}_Match_Method"] = ""
-            row[f"{prefix}_Distance_Miles"] = ""
-            row[f"{prefix}_{metric_field}_Gap"] = ""
+                    for k in range(max_comps):
+                        prefix = f"Comp{k+1}"
+                        if k < len(comps):
+                            crow = comps[k]
+                            for c in OUTPUT_COLS:
+                                row[f"{prefix}_{c}"] = get_val(crow, c)
+                            row[f"{prefix}_Match_Method"] = crow.get("Match_Method", "N/A")
+                            d = crow.get("Distance_Calc", "N/A")
+                            row[f"{prefix}_Distance_Miles"] = (
+                                f"{d:.2f}" if isinstance(d, (int, float)) else d
+                            )
+                            diff = crow.get(f"{metric_field}_Diff", "")
+                            row[f"{prefix}_{metric_field}_Gap"] = (
+                                f"{diff:.2f}" if isinstance(diff, (int, float)) else diff
+                            )
+                        else:
+                            for c in OUTPUT_COLS:
+                                row[f"{prefix}_{c}"] = ""
+                            row[f"{prefix}_Match_Method"] = ""
+                            row[f"{prefix}_Distance_Miles"] = ""
+                            row[f"{prefix}_{metric_field}_Gap"] = ""
 
-    # --- Overpaid calculation (optional) ---
-    if use_overpaid:
-        comp_metrics = []
-        for k2 in range(max_comps):
-            p2 = f"Comp{k2+1}"
-            col_name = f"{p2}_{metric_field}"
-            val = row.get(col_name, None)
-            if val not in (None, "", "N/A"):
-                try:
-                    comp_metrics.append(float(val))
-                except Exception:
-                    pass
+                    # --- Overpaid calculation (optional) ---
+                    if use_overpaid:
+                        comp_metrics = []
+                        for k2 in range(max_comps):
+                            p2 = f"Comp{k2+1}"
+                            col_name = f"{p2}_{metric_field}"
+                            val = row.get(col_name, None)
+                            if val not in (None, "", "N/A"):
+                                try:
+                                    comp_metrics.append(float(val))
+                                except Exception:
+                                    pass
 
-        if len(comp_metrics) > 0:
-            median_metric = float(pd.Series(comp_metrics).median())
+                        if len(comp_metrics) > 0:
+                            median_metric = float(pd.Series(comp_metrics).median())
 
-            if overpaid_base_dim:
-                if overpaid_base_dim == "Rooms":
-                    subj_dim = srow.get("Rooms", 0)
-                elif overpaid_base_dim == "Units":
-                    subj_dim = srow.get("Units", 0)
-                else:  # GBA
-                    subj_dim = srow.get("GBA", 0)
-            else:
-                subj_dim = 0
+                            if overpaid_base_dim:
+                                if overpaid_base_dim == "Rooms":
+                                    subj_dim = srow.get("Rooms", 0)
+                                elif overpaid_base_dim == "Units":
+                                    subj_dim = srow.get("Units", 0)
+                                else:  # GBA
+                                    subj_dim = srow.get("GBA", 0)
+                            else:
+                                subj_dim = 0
 
-            try:
-                subj_dim = float(subj_dim)
-            except Exception:
-                subj_dim = 0.0
+                            try:
+                                subj_dim = float(subj_dim)
+                            except Exception:
+                                subj_dim = 0.0
 
-            step2_val = median_metric * subj_dim
-            step3_val = step2_val * overpaid_pct
+                            step2_val = median_metric * subj_dim
+                            step3_val = step2_val * overpaid_pct
 
-            if is_hotel:
-                subj_mv = srow.get("Market Value-2023", 0)
-            else:
-                subj_mv = srow.get("Total Market value-2023", 0)
-            try:
-                subj_mv = float(subj_mv)
-            except Exception:
-                subj_mv = 0.0
-            step4_val = subj_mv * overpaid_pct
+                            if is_hotel:
+                                subj_mv = srow.get("Market Value-2023", 0)
+                            else:
+                                subj_mv = srow.get("Total Market value-2023", 0)
+                            try:
+                                subj_mv = float(subj_mv)
+                            except Exception:
+                                subj_mv = 0.0
+                            step4_val = subj_mv * overpaid_pct
 
-            overpaid_val = step4_val - step3_val
-        else:
-            overpaid_val = ""
+                            overpaid_val = step4_val - step3_val
+                        else:
+                            overpaid_val = ""
 
-        row["Subject_Overpaid_Value"] = overpaid_val
-    else:
-        row["Subject_Overpaid_Value"] = ""
+                        row["Subject_Overpaid_Value"] = overpaid_val
+                    else:
+                        row["Subject_Overpaid_Value"] = ""
 
-    # append once and update progress once
-    results.append(row)
-    prog_bar.progress((i + 1) / total_subj)
+                    # append once and update progress once
+                    results.append(row)
+                    prog_bar.progress((i + 1) / total_subj)
 
-# after loop (optional)
-status_text.markdown("✅ Background processing complete. Showing results below.")
+                # after loop
+                status_text.markdown("✅ Background processing complete. Showing results below.")
 
                 df_final = pd.DataFrame(results)
 
@@ -836,6 +836,7 @@ status_text.markdown("✅ Background processing complete. Showing results below.
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
