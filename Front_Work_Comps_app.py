@@ -742,44 +742,66 @@ else:
     overpaid_base_dim = None
 
 # ---------- FILE UPLOADS ----------
-<div style="
-    margin-top:10px;
-    margin-bottom:15px;
-    padding:14px 18px;
-    border-radius:8px;
-    background:#f5fff8;
-    border:1px solid #cfe8d9;
-    font-family:'Segoe UI', sans-serif;
-    font-size:13px;
-    color:#234;
-">
+
 # ---------- INSTRUCTION / RULES BOX ----------
-st.markdown(        
-  <b>How to use this Comp Matcher</b>
-  <ol style="padding-left:18px; margin-top:8px; margin-bottom:6px;">
-    <li>Select <b>Property Type</b> from sidebar: <code>Hotel</code> (VPR/Rooms), <code>Apartment</code> (VPU/Units), or <code>Office/Warehouse/Retail</code> (VPU/GBA).</li>
-    <li>Choose <b>Rule Mode</b>:
-        <ul style="margin:4px 0; padding-left:12px; font-size:12px;">
-          <li><b>Static</b>: Fixed 50% tolerance bands, 7-mile radius</li>
-          <li><b>Dynamic</b>: Category 1-3 with wider bands (80%/120%/150%) & larger radius</li>
-        </ul>
-    </li>
-    <li>Set <b>Max Comps</b> (1-20) and optionally enable <b>Overpaid Analysis</b>.</li>
-    <li>Prepare Excel files with required columns:
-        <ul style="margin:4px 0; padding-left:12px; font-size:12px;">
-          <li><b>Subject file</b>: Properties needing comps</li>
-          <li><b>Data Source</b>: Pool of potential comps</li>
-          <li><b>Required columns</b>: Property Zip Code, Class_Num, VPR/VPU, Rooms/Units/GBA</li>
-        </ul>
-    </li>
-    <li>Upload both files in <b>Step 1</b> and click <b>🚀 Run Matching</b>.</li>
-    <li>Review <b>Diagnostics</b> for missing data, then download <b>📥 Excel Results</b>.</li>
-  </ol>
-  <div style="margin-top:8px; font-size:12px; color:#666;">
-    💡 <b>Pro Tips</b>: Include lat/lon for distance matching. Check expander for exact matching rules. Dynamic Category 3 gives widest search radius (15 miles).
-  </div>
-</div>
-unsafe_allow_html=True,
+st.markdown(
+    """
+    <div style="
+        margin-top:10px;
+        margin-bottom:15px;
+        padding:14px 18px;
+        border-radius:8px;
+        background:#f5fff8;
+        border:1px solid #cfe8d9;
+        font-family:'Segoe UI', sans-serif;
+        font-size:13px;
+        color:#234;
+    ">
+      <b>How to use this Comp Matcher</b>
+      <ol style="padding-left:18px; margin-top:8px; margin-bottom:6px;">
+        <li>Select <b>Property Type</b> from the left sidebar:
+            <code>Hotel</code> (VPR &amp; Rooms),
+            <code>Apartment</code> (VPU &amp; Units),
+            <code>Office / Warehouse / Retail</code> (VPU &amp; GBA).
+        </li>
+        <li>Choose <b>Rule Mode</b>:
+            <span style="font-size:12px;">
+              <b>Static</b> = fixed 50% bands &amp; 7‑mile radius,
+              <b>Dynamic</b> = Category 1–3 with wider bands and larger radius.
+            </span>
+        </li>
+        <li>Set <b>Max Comps per Subject</b> and, if needed, enable
+            <b>Overpaid Analysis</b> in the sidebar.
+        </li>
+        <li>Prepare two Excel files:
+            <span style="font-size:12px;">
+              <b>Subject file</b> = properties you want comps for,
+              <b>Data Source file</b> = large pool of potential comps.
+              Make sure they include at least:
+              <b>Property Zip Code</b>, <b>Class_Num</b>,
+              <b>VPR or VPU</b>, and <b>Rooms / Units / GBA</b>.
+            </span>
+        </li>
+        <li>In <b>Step 1: Upload Files</b>, upload the Subject Excel on the left
+            and the Data Source Excel on the right, then click
+            <b>🚀 Run Matching</b>.
+        </li>
+        <li>Check the <b>Diagnostics / Hints</b> section for missing columns,
+            null values, or dropped rows.
+        </li>
+        <li>Scroll down to review the preview table and click
+            <b>📥 Download Results (Excel)</b> to save the full output.
+        </li>
+      </ol>
+      <div style="margin-top:8px; font-size:12px; color:#666;">
+        💡 <b>Tips</b>:
+        Include latitude/longitude to enable distance‑based matching.
+        Use the <b>Comparable Rules</b> expander in the sidebar
+        to see the exact Static/Dynamic rule bands and radius.
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 st.markdown("### Step 1: Upload Files")
 
@@ -1052,6 +1074,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
