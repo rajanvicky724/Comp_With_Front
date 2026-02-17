@@ -116,7 +116,6 @@ def find_comps(
     max_comps,
     use_strict_distance,
     use_county_match,
-    sort_mode,
 ):
     """
     sort_mode: 'Distance Priority' or 'VPR/VPU Gap (lower comp value)'.
@@ -953,7 +952,6 @@ if subj_file is not None and src_file is not None:
                         max_comps=max_comps,
                         use_strict_distance=use_strict_distance,
                         use_county_match=use_county_match,
-                        sort_mode=sort_mode,
                     )
 
                     row = {}
@@ -1033,7 +1031,7 @@ if subj_file is not None and src_file is not None:
                         row["Subject_Overpaid_Value"] = overpaid_val
                     else:
                         row["Subject_Overpaid_Value"] = ""
-                                            # append once and update progress once
+                    # append once and update progress once
                     results.append(row)
                     prog_bar.progress((i + 1) / total_subj)
 
@@ -1074,6 +1072,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
