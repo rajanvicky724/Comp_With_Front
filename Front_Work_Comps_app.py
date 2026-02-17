@@ -753,6 +753,8 @@ else:
     font-size:13px;
     color:#234;
 ">
+# ---------- INSTRUCTION / RULES BOX ----------
+st.markdown(        
   <b>How to use this Comp Matcher</b>
   <ol style="padding-left:18px; margin-top:8px; margin-bottom:6px;">
     <li>Select <b>Property Type</b> from sidebar: <code>Hotel</code> (VPR/Rooms), <code>Apartment</code> (VPU/Units), or <code>Office/Warehouse/Retail</code> (VPU/GBA).</li>
@@ -777,7 +779,8 @@ else:
     💡 <b>Pro Tips</b>: Include lat/lon for distance matching. Check expander for exact matching rules. Dynamic Category 3 gives widest search radius (15 miles).
   </div>
 </div>
-
+unsafe_allow_html=True,
+)
 st.markdown("### Step 1: Upload Files")
 
 col1, col2 = st.columns(2)
@@ -1049,6 +1052,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
