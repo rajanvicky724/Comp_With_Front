@@ -409,7 +409,7 @@ if not st.session_state["show_app"]:
             """
             <div style="margin-top:0px; margin-bottom:25px; font-size:13px; color:#666;
                         font-family:'Segoe UI', sans-serif; text-align:center;">
-                Trusted by hotels, multifamily, and commercial owners nationwide.
+                Trusted by hotels, apartments, and commercial owners nationwide.
             </div>
             """,
             unsafe_allow_html=True,
@@ -1096,6 +1096,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
