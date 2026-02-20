@@ -417,9 +417,9 @@ if not st.session_state["show_app"]:
 
         img_col1, img_col2, img_col3 = st.columns(3)
         with img_col1:
-            st.image("real_estate_building_1.png", caption="Commercial properties", use_column_width=True)
+            st.image("real_estate_building_1.png", caption="Apartment", use_column_width=True)
         with img_col2:
-            st.image("apartment_complex_1.png", caption="Multifamily & apartments", use_column_width=True)
+            st.image("apartment_complex_1.png", caption="Hotel", use_column_width=True)
         with img_col3:
             st.image("professional_team_1.png", caption="Tax experts", use_column_width=True)
 
@@ -1096,6 +1096,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
