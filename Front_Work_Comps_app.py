@@ -423,6 +423,30 @@ if not st.session_state["show_app"]:
         with img_col3:
             st.image("professional_team_1.png", caption="Tax experts", use_column_width=True)
 
+         # new row for Office / Retail / Warehouse
+        img_col4, img_col5, img_col6 = st.columns(3)
+
+        with img_col4:
+            st.image(
+                "office.png",
+                caption="Office",
+                use_column_width=True
+            )
+
+        with img_col5:
+            st.image(
+                "retail.png",
+                caption="Retail",
+                use_column_width=True
+            )
+
+        with img_col6:
+            st.image(
+                "warehouse.png",
+                caption="Warehouse",
+                use_column_width=True
+            )       
+
         if st.button("➡️ Proceed to Comparable Matching", type="primary"):
             st.session_state["show_app"] = True
 
@@ -1072,6 +1096,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
