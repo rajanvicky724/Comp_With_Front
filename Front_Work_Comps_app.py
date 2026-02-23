@@ -637,8 +637,7 @@ with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
 **Location Rule**  
 • Strict Distance Filter: ON.  
-• Max Radius: 7 miles.  
-• Priority: Within radius → Same ZIP → Same City → Same County.
+• Max Radius: 7 miles.
             """
         )
 
@@ -1069,6 +1068,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
