@@ -661,8 +661,7 @@ with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
 **Location Rule**  
 • Strict Distance Filter: ON.  
-• Max Radius: 10 miles.  
-• Priority: Within radius → Same ZIP → Same City → Same County.
+• Max Radius: 10 miles.
                 """
             )
         elif category == "Category 2":
@@ -682,8 +681,7 @@ with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
 **Location Rule**  
 • Strict Distance Filter: ON.  
-• Max Radius: 15 miles.  
-• Priority: Within radius → Same ZIP → Same City → Same County.
+• Max Radius: 15 miles.
                 """
             )
         else:  # Category 3
@@ -703,8 +701,7 @@ with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
 **Location Rule**  
 • Strict Distance Filter: ON.  
-• Max Radius: 15 miles.  
-• Priority: Within radius → Same ZIP → Same City → Same County.
+• Max Radius: 15 miles.
                 """
             )
 
@@ -1068,6 +1065,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
