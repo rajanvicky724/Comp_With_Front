@@ -181,39 +181,12 @@ def find_comps(
         priority = 99
 
         is_radius = dist_miles <= max_radius_miles
-        is_zip = str(srow.get("Property Zip Code")) == str(crow.get("Property Zip Code"))
-        is_city = str(srow.get("Property City", "")).strip().lower() == \
-                  str(crow.get("Property City", "")).strip().lower()
-        is_county = str(srow.get("Property County", "")).strip().lower() == \
-                    str(crow.get("Property County", "")).strip().lower()
+        # Only keep comps within the miles radius, ignore ZIP/City/County
+        if not is_radius:
+            continue
 
-        if use_strict_distance:
-            if is_radius:
-                match_type = f"Within {max_radius_miles} Miles"
-                priority = 1
-            elif is_zip:
-                match_type = "Same ZIP"
-                priority = 2
-            elif is_city:
-                match_type = "Same City"
-                priority = 3
-            elif use_county_match and is_county:
-                match_type = "Same County"
-                priority = 4
-            else:
-                continue
-        else:
-            if is_zip:
-                match_type = "Same ZIP"
-                priority = 1
-            elif is_city:
-                match_type = "Same City"
-                priority = 2
-            elif use_county_match and is_county:
-                match_type = "Same County"
-                priority = 3
-            else:
-                continue
+        match_type = f"Within {max_radius_miles} Miles"
+        priority = 1
 
         metric_gap = float(subj_metric - comp_metric)
 
@@ -1096,6 +1069,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
