@@ -114,20 +114,17 @@ def find_comps(
     max_gap_pct_value,
     max_gap_pct_size,
     max_comps,
-    use_strict_distance,
-    use_county_match,
 ):
     """
-    sort_mode: 'Distance Priority' or 'VPR/VPU Gap (lower comp value)'.
+    Single‑mode matching using only miles as location filter.
     """
 
-        # metric / size / value by property type
+    # metric / size / value by property type
     if is_hotel:
         metric_field = "VPR"
         size_field = "Rooms"
         value_field = "Market Value-2023"
     else:
-        # non‑hotel: use prop_type from the row (already added to srow earlier)
         ptype = srow.get("Property_Type", "").strip().lower()
         metric_field = "VPU"
         if ptype == "apartment":
@@ -162,6 +159,7 @@ def find_comps(
         comp_value = crow.get(value_field)
         comp_size = crow.get(size_field)
 
+        # main metric must exist and be <= subject
         if pd.isna(comp_metric) or comp_metric > subj_metric:
             continue
 
@@ -177,25 +175,18 @@ def find_comps(
         if pd.notna(slat) and pd.notna(slon) and pd.notna(clat) and pd.notna(clon):
             dist_miles = haversine(slat, slon, clat, clon)
 
-        match_type = None
-        priority = 99
-
-        is_radius = dist_miles <= max_radius_miles
-        # Only keep comps within the miles radius, ignore ZIP/City/County
-        if not is_radius:
+        # miles‑only location rule
+        if dist_miles > max_radius_miles:
             continue
 
         match_type = f"Within {max_radius_miles} Miles"
-        priority = 1
+        priority = 1  # kept for compatibility if needed later
 
         metric_gap = float(subj_metric - comp_metric)
 
         candidates.append(
             (crow, priority, dist_miles, metric_gap, match_type)
         )
-
-    # ---------- NEW SELECTION LOGIC (VPU/VPR only) ----------
-    # candidates = list of (crow, priority, dist_miles, metric_gap, match_type)
 
     if not candidates:
         return []
@@ -251,6 +242,51 @@ def find_comps(
 
     return final_comps
 
+
+def find_comps_cascading(
+    srow,
+    src_df,
+    *,
+    is_hotel,
+    use_hotel_class_rule,
+    max_comps,
+    rule_sets,
+):
+    """
+    Try Static, then Cat1, Cat2, Cat3 until we fill up to max_comps.
+    Ensures unique comps across all modes.
+    """
+    all_comps = []
+    chosen_rows = []
+
+    for rules in rule_sets:
+        if len(all_comps) >= max_comps:
+            break
+
+        comps = find_comps(
+            srow,
+            src_df,
+            is_hotel=is_hotel,
+            use_hotel_class_rule=use_hotel_class_rule,
+            max_radius_miles=rules["max_radius_miles"],
+            max_gap_pct_main=rules["max_gap_pct_main"],
+            max_gap_pct_value=rules["max_gap_pct_value"],
+            max_gap_pct_size=rules["max_gap_pct_size"],
+            max_comps=max_comps,
+        )
+
+        for crow in comps:
+            if len(all_comps) >= max_comps:
+                break
+            if unique_ok(srow, crow, chosen_rows, is_hotel=is_hotel):
+                crow = crow.copy()
+                crow["Rule_Set"] = rules["name"]
+                chosen_rows.append(crow)
+                all_comps.append(crow)
+
+    return all_comps
+
+
 OUTPUT_COLS_HOTEL = [
     "Property Account No", "Hotel Name", "Rooms", "VPR", "Property Address",
     "Property City", "Property County", "Property State", "Property Zip Code",
@@ -281,6 +317,8 @@ def get_val(row, col):
 # ==========================================
 
 st.set_page_config(page_title="Comp Matcher", layout="wide")
+
+
 def show_lottie_overlay():
     components.html(
         """
@@ -294,6 +332,8 @@ def show_lottie_overlay():
         """,
         height=320,
     )
+
+
 # --- Front page controller ---
 if "show_app" not in st.session_state:
     st.session_state["show_app"] = False
@@ -337,10 +377,8 @@ if not st.session_state["show_app"]:
         unsafe_allow_html=True,
     )
 
-    # STRAP WITH LOGO (adjust columns to nudge logo)
     st.markdown('<div class="hero-strap">', unsafe_allow_html=True)
 
-    # change [1, 2, 1] to move logo: bigger first -> move right, bigger last -> move left
     left, center, right = st.columns([1.9, 2, 0.7])
 
     with center:
@@ -350,7 +388,6 @@ if not st.session_state["show_app"]:
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # HERO CONTENT UNDER STRAP
     col_left, col_center, col_right = st.columns([1, 2, 1])
     with col_center:
         st.markdown(
@@ -396,36 +433,23 @@ if not st.session_state["show_app"]:
         with img_col3:
             st.image("professional_team_1.png", caption="Tax experts", width="stretch")
 
-         # new row for Office / Retail / Warehouse
         img_col4, img_col5, img_col6 = st.columns(3)
 
         with img_col4:
-            st.image(
-                "office.png",
-                caption="Office",
-                width="stretch"
-            )
+            st.image("office.png", caption="Office", width="stretch")
 
         with img_col5:
-            st.image(
-                "retail.png",
-                caption="Retail",
-                width="stretch"
-            )
+            st.image("retail.png", caption="Retail", width="stretch")
 
         with img_col6:
-            st.image(
-                "warehouse.png",
-                caption="Warehouse",
-                width="stretch"
-            )       
+            st.image("warehouse.png", caption="Warehouse", width="stretch")
 
         if st.button("➡️ Proceed to Comparable Matching", type="primary"):
             st.session_state["show_app"] = True
 
     st.stop()
 
-# ---------- MAIN APP (unchanged) ----------
+# ---------- MAIN APP ----------
 
 st.markdown(
     """
@@ -478,6 +502,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 st.markdown(
     """
     <style>
@@ -519,7 +544,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
 # ---------- SIDEBAR CONFIG ----------
 
 st.sidebar.header("⚙️ Configuration")
@@ -531,29 +555,13 @@ prop_type = st.sidebar.radio(
 )
 
 is_hotel = prop_type == "Hotel"
+use_hotel_class_rule = is_hotel
 
-use_hotel_class_rule = is_hotel  # True for Hotel, False for others
-
-# fixed Location Rules (hidden from UI)
-use_strict_distance = True     # always use Radius → ZIP → City → County
-max_radius = 7.0              # miles
-use_county_match = True        # allow Same County after City
-
-# fixed default rules (hidden from UI)
-if is_hotel:
-    main_metric_name = "VPR"
-else:
-    main_metric_name = "VPU"
-
-max_gap_pct_main = 0.50    # 50% main metric gap
-max_gap_pct_value = 0.50   # 50% market/total value gap
-max_gap_pct_size = 0.50    # 50% size gap (Rooms / Units / GBA)
-
-# --- Rule mode: Static vs Dynamic ---
+# --- Rule mode: Static vs Dynamic (for display only) ---
 rule_mode = st.sidebar.radio(
-    "Rule Mode",
+    "Rule Mode (primary view)",
     ["Static", "Dynamic"],
-    help="Static uses standard rules. Dynamic uses Category 1–3 presets.",
+    help="Used mainly for displaying rule text. Matching can optionally cascade through all modes.",
 )
 
 category = None
@@ -568,46 +576,42 @@ if rule_mode == "Dynamic":
         ),
     )
 
-# Default STATIC rules (existing standard set)
-if is_hotel:
-    main_metric_name = "VPR"
-else:
-    main_metric_name = "VPU"
+# main metric name
+main_metric_name = "VPR" if is_hotel else "VPU"
+
+# distance + bands for primary (single) mode – used when cascading is OFF
+MAIN_BAND = 0.50  # 50–100% VPU/VPR
 
 if rule_mode == "Static":
-    max_gap_pct_main = 0.50      # 50% main metric band, still enforced
-    max_gap_pct_value = 0.50     # 50% Market/Total value
-    max_gap_pct_size = 0.50      # 50% Units/Rooms/GBA
-    max_radius = 7.0             # 7 miles (your standard)
-    use_strict_distance = True
-    use_county_match = True
-
-else:  # Dynamic categories
-    use_strict_distance = True
-    use_county_match = True
-
-    # Keep main metric band fixed at ±50% for ALL categories
-    max_gap_pct_main = 0.50
-    
+    max_gap_pct_main = MAIN_BAND
+    max_gap_pct_value = 0.50
+    max_gap_pct_size = 0.50
+    max_radius = 7.0
+else:
     if category == "Category 1":
-        # ±80% → allowed range = 20% to 180% of subject
-        max_gap_pct_size = 0.80
+        max_gap_pct_main = MAIN_BAND
         max_gap_pct_value = 0.80
+        max_gap_pct_size = 0.80
         max_radius = 10.0
-
     elif category == "Category 2":
-        # ±120%
-        max_gap_pct_size = 1.20
+        max_gap_pct_main = MAIN_BAND
         max_gap_pct_value = 1.20
+        max_gap_pct_size = 1.20
         max_radius = 15.0
-
-    else:  # Category 3
-        # ±150%
-        max_gap_pct_size = 1.50
+    else:
+        max_gap_pct_main = MAIN_BAND
         max_gap_pct_value = 1.50
+        max_gap_pct_size = 1.50
         max_radius = 15.0
 
-# only visible control
+# --- Cascading switch ---
+use_cascading = st.sidebar.checkbox(
+    "Use Cascading Matching (Static → Cat1 → Cat2 → Cat3)",
+    value=True,
+    help="If checked, fills missing comps by relaxing rules step‑by‑step.",
+)
+
+# --- Max comps ---
 max_comps = st.sidebar.number_input(
     "Max Comps per Subject",
     value=3,
@@ -615,14 +619,15 @@ max_comps = st.sidebar.number_input(
     min_value=1,
     max_value=20,
 )
-# Read‑only display of internal rules
+
+# --- Read‑only rules text ---
 with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
     if rule_mode == "Static":
         st.markdown(
             """
 **Main Metric (VPU / VPR)**  
-• Comps must have VPU/VPR ≤ subject (not more than 50% lower).  
+• Comps must have VPU/VPR ≤ subject.  
 • Allowed band: ±50% around subject  
   – Min 50% of subject metric, max 100% of subject metric.
 
@@ -636,31 +641,29 @@ with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 • Office / Warehouse / Retail: GBA within ±50% of subject GBA.
 
 **Location Rule**  
-• Strict Distance Filter: ON.  
+• Miles only (no ZIP/City/County).  
 • Max Radius: 7 miles.
             """
         )
 
-    else:  # Dynamic
+    else:
         if category == "Category 1":
             st.markdown(
                 """
 **Dynamic – Category 1**  
 
 **Size Rule (Units / Rooms / GBA)**  
-• ±80% around subject  
-  – Allowed range: 20% to 180% of subject size.
+• ±80% around subject size.
 
 **Market / Value Rule**  
-• ±80% around subject value  
-  – Allowed range: 20% to 180% of subject Market/Total value.
+• ±80% around subject value.
 
 **Main Metric (VPU / VPR)**  
 • VPU/VPR ≤ subject.  
 • ±50% band (50% to 100% of subject metric).  
 
 **Location Rule**  
-• Strict Distance Filter: ON.  
+• Miles only.  
 • Max Radius: 10 miles.
                 """
             )
@@ -677,14 +680,14 @@ with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
 **Main Metric (VPU / VPR)**  
 • VPU/VPR ≤ subject.  
-• ±50% band (50% to 100% of subject metric).
+• ±50% band.
 
 **Location Rule**  
-• Strict Distance Filter: ON.  
+• Miles only.  
 • Max Radius: 15 miles.
                 """
             )
-        else:  # Category 3
+        else:
             st.markdown(
                 """
 **Dynamic – Category 3**  
@@ -697,14 +700,15 @@ with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
 **Main Metric (VPU / VPR)**  
 • VPU/VPR ≤ subject.  
-• ±50% band (50% to 100% of subject metric).
+• ±50% band.
 
 **Location Rule**  
-• Strict Distance Filter: ON.  
+• Miles only.  
 • Max Radius: 15 miles.
                 """
             )
 
+# --- Overpaid Analysis ---
 st.sidebar.markdown("### 💸 Overpaid Analysis")
 use_overpaid = st.sidebar.checkbox(
     "Calculate Overpaid Amount?",
@@ -733,7 +737,38 @@ else:
     overpaid_pct = 0.0
     overpaid_base_dim = None
 
-# ---------- FILE UPLOADS ----------
+# ---------- Build rule_sets for cascading ----------
+
+rule_sets = [
+    {
+        "name": "Static",
+        "max_radius_miles": 7.0,
+        "max_gap_pct_main": MAIN_BAND,
+        "max_gap_pct_value": 0.50,
+        "max_gap_pct_size": 0.50,
+    },
+    {
+        "name": "Category 1",
+        "max_radius_miles": 10.0,
+        "max_gap_pct_main": MAIN_BAND,
+        "max_gap_pct_value": 0.80,
+        "max_gap_pct_size": 0.80,
+    },
+    {
+        "name": "Category 2",
+        "max_radius_miles": 15.0,
+        "max_gap_pct_main": MAIN_BAND,
+        "max_gap_pct_value": 1.20,
+        "max_gap_pct_size": 1.20,
+    },
+    {
+        "name": "Category 3",
+        "max_radius_miles": 15.0,
+        "max_gap_pct_main": MAIN_BAND,
+        "max_gap_pct_value": 1.50,
+        "max_gap_pct_size": 1.50,
+    },
+]
 
 # ---------- INSTRUCTION / RULES BOX ----------
 st.markdown(
@@ -756,11 +791,8 @@ st.markdown(
             <code>Apartment</code> (VPU &amp; Units),
             <code>Office / Warehouse / Retail</code> (VPU &amp; GBA).
         </li>
-        <li>Choose <b>Rule Mode</b>:
-            <span style="font-size:12px;">
-              <b>Static</b> = fixed 50% bands &amp; 7‑mile radius,
-              <b>Dynamic</b> = Category 1–3 with wider bands and larger radius.
-            </span>
+        <li>Choose <b>Rule Mode</b> (for reference) and optionally enable
+            <b>Cascading Matching</b> to auto‑fill missing comps.
         </li>
         <li>Set <b>Max Comps per Subject</b> and, if needed, enable
             <b>Overpaid Analysis</b> in the sidebar.
@@ -795,6 +827,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 st.markdown("### Step 1: Upload Files")
 
 col1, col2 = st.columns(2)
@@ -852,10 +885,9 @@ if subj_file is not None and src_file is not None:
                 if is_hotel:
                     required_cols = ["Property Zip Code", "Class_Num", "VPR", "Rooms"]
                 else:
-                    # non‑hotel always needs VPU; size field depends on type
                     if prop_type == "Apartment":
                         required_cols = ["Property Zip Code", "VPU", "Units"]
-                    else:  # Office, Warehouse, Retail
+                    else:
                         required_cols = ["Property Zip Code", "VPU", "GBA"]
 
                 st.subheader("Diagnostics / Hints")
@@ -916,36 +948,44 @@ if subj_file is not None and src_file is not None:
                 status_text = st.empty()
 
                 for i, (_, srow) in enumerate(subj.iterrows()):
-                    # show what is happening
-                    status_text.markdown(
-        f"""
-        <div class="status-card">
-          <div class="status-title">
-            <span class="status-pill">RUNNING</span>
-            Matching subjects in the background…
-          </div>
-          <div class="status-body">
-            Processing subject <strong>{i+1} of {total_subj}</strong><br>
-            Account: <strong>{srow.get('Property Account No', 'N/A')}</strong>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
 
-                    comps = find_comps(
-                        srow,
-                        src,
-                        is_hotel=is_hotel,
-                        use_hotel_class_rule=use_hotel_class_rule,
-                        max_radius_miles=max_radius,
-                        max_gap_pct_main=max_gap_pct_main,
-                        max_gap_pct_value=max_gap_pct_value,
-                        max_gap_pct_size=max_gap_pct_size,
-                        max_comps=max_comps,
-                        use_strict_distance=use_strict_distance,
-                        use_county_match=use_county_match,
+                    status_text.markdown(
+                        f"""
+                        <div class="status-card">
+                          <div class="status-title">
+                            <span class="status-pill">RUNNING</span>
+                            Matching subjects in the background…
+                          </div>
+                          <div class="status-body">
+                            Processing subject <strong>{i+1} of {total_subj}</strong><br>
+                            Account: <strong>{srow.get('Property Account No', 'N/A')}</strong>
+                          </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
                     )
+
+                    if use_cascading:
+                        comps = find_comps_cascading(
+                            srow,
+                            src,
+                            is_hotel=is_hotel,
+                            use_hotel_class_rule=use_hotel_class_rule,
+                            max_comps=max_comps,
+                            rule_sets=rule_sets,
+                        )
+                    else:
+                        comps = find_comps(
+                            srow,
+                            src,
+                            is_hotel=is_hotel,
+                            use_hotel_class_rule=use_hotel_class_rule,
+                            max_radius_miles=max_radius,
+                            max_gap_pct_main=max_gap_pct_main,
+                            max_gap_pct_value=max_gap_pct_value,
+                            max_gap_pct_size=max_gap_pct_size,
+                            max_comps=max_comps,
+                        )
 
                     row = {}
                     for c in OUTPUT_COLS:
@@ -958,6 +998,7 @@ if subj_file is not None and src_file is not None:
                             for c in OUTPUT_COLS:
                                 row[f"{prefix}_{c}"] = get_val(crow, c)
                             row[f"{prefix}_Match_Method"] = crow.get("Match_Method", "N/A")
+                            row[f"{prefix}_Rule_Set"] = crow.get("Rule_Set", rule_mode)
                             d = crow.get("Distance_Calc", "N/A")
                             row[f"{prefix}_Distance_Miles"] = (
                                 f"{d:.2f}" if isinstance(d, (int, float)) else d
@@ -970,6 +1011,7 @@ if subj_file is not None and src_file is not None:
                             for c in OUTPUT_COLS:
                                 row[f"{prefix}_{c}"] = ""
                             row[f"{prefix}_Match_Method"] = ""
+                            row[f"{prefix}_Rule_Set"] = ""
                             row[f"{prefix}_Distance_Miles"] = ""
                             row[f"{prefix}_{metric_field}_Gap"] = ""
 
@@ -994,7 +1036,7 @@ if subj_file is not None and src_file is not None:
                                     subj_dim = srow.get("Rooms", 0)
                                 elif overpaid_base_dim == "Units":
                                     subj_dim = srow.get("Units", 0)
-                                else:  # GBA
+                                else:
                                     subj_dim = srow.get("GBA", 0)
                             else:
                                 subj_dim = 0
@@ -1024,11 +1066,10 @@ if subj_file is not None and src_file is not None:
                         row["Subject_Overpaid_Value"] = overpaid_val
                     else:
                         row["Subject_Overpaid_Value"] = ""
-                    # append once and update progress once
+
                     results.append(row)
                     prog_bar.progress((i + 1) / total_subj)
 
-                # after loop (same indent as the for-loop line)
                 status_text.markdown(
                     """
                     <div class="status-card">
@@ -1049,7 +1090,6 @@ if subj_file is not None and src_file is not None:
                 st.success(f"✅ Done! Processed {total_subj} subjects.")
                 st.dataframe(df_final.head())
 
-
                 buffer = io.BytesIO()
                 with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
                     df_final.to_excel(writer, index=False)
@@ -1065,49 +1105,3 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
