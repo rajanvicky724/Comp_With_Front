@@ -613,25 +613,25 @@ else:  # Dynamic categories
     use_strict_distance = True
     use_county_match = True
 
+    # Keep main metric band fixed at ±50% for ALL categories
+    max_gap_pct_main = 0.50
+    
     if category == "Category 1":
         # ±80% → allowed range = 20% to 180% of subject
         max_gap_pct_size = 0.80
         max_gap_pct_value = 0.80
-        max_gap_pct_main = 0.80
         max_radius = 10.0
 
     elif category == "Category 2":
         # ±120%
         max_gap_pct_size = 1.20
         max_gap_pct_value = 1.20
-        max_gap_pct_main = 1.20
         max_radius = 15.0
 
     else:  # Category 3
         # ±150%
         max_gap_pct_size = 1.50
         max_gap_pct_value = 1.50
-        max_gap_pct_main = 1.50
         max_radius = 15.0
 
 # only visible control
@@ -685,7 +685,7 @@ with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
 **Main Metric (VPU / VPR)**  
 • VPU/VPR ≤ subject.  
-• ±80% band (20% to 180% of subject metric).  
+• ±50% band (50% to 100% of subject metric).  
 
 **Location Rule**  
 • Strict Distance Filter: ON.  
@@ -706,7 +706,7 @@ with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
 **Main Metric (VPU / VPR)**  
 • VPU/VPR ≤ subject.  
-• ±120% band.
+• ±50% band (50% to 100% of subject metric).
 
 **Location Rule**  
 • Strict Distance Filter: ON.  
@@ -727,7 +727,7 @@ with st.sidebar.expander("📏Comparable Rules ", expanded=False):
 
 **Main Metric (VPU / VPR)**  
 • VPU/VPR ≤ subject.  
-• ±150% band.
+• ±50% band (50% to 100% of subject metric).
 
 **Location Rule**  
 • Strict Distance Filter: ON.  
@@ -1096,6 +1096,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
