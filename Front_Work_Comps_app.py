@@ -372,7 +372,7 @@ if not st.session_state["show_app"]:
 
     with center:
         st.markdown('<div class="hero-strap-inner">', unsafe_allow_html=True)
-        st.image("logo_oconnor.png", use_column_width=False)
+        st.image("logo_oconnor.png", use_column_width="stretch")
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
@@ -1096,6 +1096,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
