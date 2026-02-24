@@ -741,7 +741,7 @@ else:
 
 rule_sets = [
     {
-        "name": "Static",
+        "name": "Static_7mi",
         "max_radius_miles": 7.0,
         "max_gap_pct_main": MAIN_BAND,
         "max_gap_pct_value": 0.50,
@@ -752,7 +752,7 @@ rule_sets = [
         "max_radius_miles": 15.0,
         "max_gap_pct_main": MAIN_BAND,
         "max_gap_pct_value": 0.50,
-        "max_gap_pct_value": 0.50,
+        "max_gap_pct_size": 0.50,
     },    
     {
         "name": "Category 1",
@@ -1112,4 +1112,5 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
