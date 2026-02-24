@@ -799,7 +799,12 @@ st.markdown(
             <code>Office / Warehouse / Retail</code> (VPU &amp; GBA).
         </li>
         <li>Choose <b>Rule Mode</b> (for reference) and optionally enable
-            <b>Cascading Matching</b> to auto‑fill missing comps.
+            <b>Cascading Matching</b>:
+            <span style="font-size:12px;">
+            Static first searches within <b>7 miles</b>. With Cascading ON, the tool
+            then looks out to <b>15 miles</b> (same 50–100% VPU/VPR band) and finally
+            uses Dynamic Categories 1–3 to fill any missing comps.
+            </span>
         </li>
         <li>Set <b>Max Comps per Subject</b> and, if needed, enable
             <b>Overpaid Analysis</b> in the sidebar.
@@ -826,9 +831,9 @@ st.markdown(
       </ol>
       <div style="margin-top:8px; font-size:12px; color:#666;">
         💡 <b>Tips</b>:
-        Include latitude/longitude to enable distance‑based matching.
-        Use the <b>Comparable Rules</b> expander in the sidebar
-        to see the exact Static/Dynamic rule bands and radius.
+        Include latitude/longitude to enable distance‑based matching.<br>
+        Cascading Matching first uses 7‑mile Static comps, then extends to 15 miles
+        and Dynamic categories to fill any missing comps.
       </div>
     </div>
     """,
@@ -1112,6 +1117,7 @@ if subj_file is not None and src_file is not None:
                 st.error(f"An error occurred: {e}")
 else:
     st.info("Please upload both Subject and Data Source Excel files to begin.")
+
 
 
 
