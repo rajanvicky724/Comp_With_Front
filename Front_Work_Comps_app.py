@@ -21,7 +21,12 @@ def haversine(lat1, lon1, lat2, lon2):
         return c * 3956  # miles
     except Exception:
         return 999999
-
+        
+def norm_desc(s: str) -> str:
+    """Simple normalizer for description text (case-insensitive, strip spaces)."""
+    if pd.isna(s):
+        return ""
+    return str(s).strip().lower()
 
 def norm_class(v):
     try:
@@ -114,22 +119,21 @@ def find_comps(
     max_gap_pct_value,
     max_gap_pct_size,
     max_comps,
+    prop_type=None,
+    debug=False,
 ):
-    """
-    Single‑mode matching using only miles as location filter.
-    """
+    """Single-mode matching using only miles as location filter."""
 
-    # metric / size / value by property type
     if is_hotel:
         metric_field = "VPR"
         size_field = "Rooms"
-        value_field = "Market Value-2023"
+        value_field = "Total Market value-2023"
     else:
-        ptype = srow.get("Property_Type", "").strip().lower()
         metric_field = "VPU"
+        ptype = (prop_type or "").strip().lower()
         if ptype == "apartment":
             size_field = "Units"
-        else:  # office, warehouse, retail and any others
+        else:
             size_field = "GBA"
         value_field = "Total Market value-2023"
 
@@ -140,103 +144,127 @@ def find_comps(
     slat, slon = srow.get("lat"), srow.get("lon")
 
     if pd.isna(subj_metric):
+        if debug:
+            print("DEBUG: subj_metric is NaN, aborting.")
         return []
+
+    if debug:
+        print("\n========== DEBUG FOR SUBJECT ==========")
+        print("Account:", srow.get("Property Account No"))
+        print("Metric field:", metric_field, "subj_metric:", subj_metric)
+        print("Size field:", size_field, "subj_size:", subj_size)
+        print("Value field:", value_field, "subj_value:", subj_value)
+        print("Radius:", max_radius_miles,
+              "VPU band:", max_gap_pct_main,
+              "Value band:", max_gap_pct_value,
+              "Size band:", max_gap_pct_size)
+        print("Total source rows:", len(src_df))
+
+    total = len(src_df)
+    after_class = after_metric_exist = 0
+    after_metric_band = after_value_band = 0
+    after_size_band = after_distance = 0
 
     candidates = []
 
     for _, crow in src_df.iterrows():
         comp_class = crow.get("Class_Num")
 
+        class_ok_flag = True
         if is_hotel and use_hotel_class_rule:
             if not class_ok_hotel(subj_class, comp_class):
-                continue
+                class_ok_flag = False
         else:
             if pd.notna(subj_class) and pd.notna(comp_class):
                 if not class_ok_other(subj_class, comp_class):
-                    continue
+                    class_ok_flag = False
+
+        if not class_ok_flag:
+            continue
+        after_class += 1
 
         comp_metric = crow.get(metric_field)
         comp_value = crow.get(value_field)
         comp_size = crow.get(size_field)
 
-        # main metric must exist and be <= subject
         if pd.isna(comp_metric) or comp_metric > subj_metric:
             continue
+        after_metric_exist += 1
 
         if not tolerance_ok(subj_metric, comp_metric, max_gap_pct_main):
             continue
+        after_metric_band += 1
+
         if not tolerance_ok(subj_value, comp_value, max_gap_pct_value):
             continue
+        after_value_band += 1
+
         if not tolerance_ok(subj_size, comp_size, max_gap_pct_size):
             continue
+        after_size_band += 1
 
         clat, clon = crow.get("lat"), crow.get("lon")
         dist_miles = 999
         if pd.notna(slat) and pd.notna(slon) and pd.notna(clat) and pd.notna(clon):
             dist_miles = haversine(slat, slon, clat, clon)
 
-        # miles‑only location rule
         if dist_miles > max_radius_miles:
             continue
+        after_distance += 1
 
         match_type = f"Within {max_radius_miles} Miles"
-        priority = 1  # kept for compatibility if needed later
-
         metric_gap = float(subj_metric - comp_metric)
 
-        candidates.append(
-            (crow, priority, dist_miles, metric_gap, match_type)
-        )
+        ccopy = crow.copy()
+        ccopy["Match_Method"] = match_type
+        ccopy["Distance_Calc"] = dist_miles if dist_miles != 999 else "N/A"
+        ccopy[f"{metric_field}_Diff"] = metric_gap
+
+        candidates.append(ccopy)
+
+    if debug:
+        print("Total candidates start:", total)
+        print("After class rule:", after_class)
+        print("After metric exists & <= subj:", after_metric_exist)
+        print("After VPU/VPR band:", after_metric_band)
+        print("After value band:", after_value_band)
+        print("After size band:", after_size_band)
+        print("After distance:", after_distance)
+        print("Final candidates list length:", len(candidates))
+        print("========================================")
 
     if not candidates:
         return []
 
-    # subject main metric and value
     subj_value = srow.get(value_field)
 
     def market_diff(cand_row):
-        """Absolute market value difference vs subject, for Comp 1 tie‑break."""
         cv = cand_row.get(value_field)
         if pd.isna(subj_value) or pd.isna(cv):
             return float("inf")
         return abs(float(cv) - float(subj_value))
 
-    # sort by main metric (VPR/VPU) DESC only
-    rows_only = [c[0] for c in candidates]
+    rows_only = candidates[:]
     rows_only.sort(key=lambda r: r.get(metric_field, 0.0), reverse=True)
 
-    # --- Comp 1: highest VPU/VPR, value closest to subject ---
     top_metric = rows_only[0].get(metric_field)
     top_group = [r for r in rows_only if r.get(metric_field) == top_metric]
     comp1 = min(top_group, key=market_diff) if top_group else rows_only[0]
-
-    # --- Comp 2: lowest VPU/VPR (bottom) ---
     comp2 = rows_only[-1]
-
-    # --- Comp 3: middle of descending list ---
     mid_index = len(rows_only) // 2
     comp3 = rows_only[mid_index]
 
-    # collect unique comps in order: 1, 2, 3 (skipping duplicates)
     final_comps = []
     chosen_rows = []
 
     for crow in [comp1, comp2, comp3]:
         if crow is None:
             continue
-        if unique_ok(srow, crow, chosen_rows, is_hotel=is_hotel):
-            # find original candidate tuple to get distance, metric_gap, match_type
-            for c in candidates:
-                if c[0] is crow:
-                    _, priority, dist_miles, metric_gap, match_type = c
-                    break
-            ccopy = crow.copy()
-            ccopy["Match_Method"] = match_type
-            ccopy["Distance_Calc"] = dist_miles if dist_miles != 999 else "N/A"
-            ccopy[f"{metric_field}_Diff"] = metric_gap
-            final_comps.append(ccopy)
-            chosen_rows.append(ccopy)
-
+        if not unique_ok(srow, crow, chosen_rows, is_hotel=is_hotel):
+            continue
+        ccopy = crow.copy()
+        final_comps.append(ccopy)
+        chosen_rows.append(ccopy)
         if len(final_comps) == max_comps:
             break
 
@@ -251,15 +279,13 @@ def find_comps_cascading(
     use_hotel_class_rule,
     max_comps,
     rule_sets,
+    prop_type=None,
+    debug=False,
 ):
-    """
-    Try Static, then Cat1, Cat2, Cat3 until we fill up to max_comps.
-    Ensures unique comps across all modes.
-    """
     all_comps = []
     chosen_rows = []
 
-    for rules in rule_sets:
+    for idx_rules, rules in enumerate(rule_sets):
         if len(all_comps) >= max_comps:
             break
 
@@ -273,16 +299,19 @@ def find_comps_cascading(
             max_gap_pct_value=rules["max_gap_pct_value"],
             max_gap_pct_size=rules["max_gap_pct_size"],
             max_comps=max_comps,
+            prop_type=prop_type,
+            debug=debug and idx_rules == 0,
         )
 
         for crow in comps:
             if len(all_comps) >= max_comps:
                 break
-            if unique_ok(srow, crow, chosen_rows, is_hotel=is_hotel):
-                crow = crow.copy()
-                crow["Rule_Set"] = rules["name"]
-                chosen_rows.append(crow)
-                all_comps.append(crow)
+            if not unique_ok(srow, crow, chosen_rows, is_hotel=is_hotel):
+                continue
+            ccopy = crow.copy()
+            ccopy["Rule_Set"] = rules["name"]
+            chosen_rows.append(ccopy)
+            all_comps.append(ccopy)
 
     return all_comps
 
@@ -290,7 +319,7 @@ def find_comps_cascading(
 OUTPUT_COLS_HOTEL = [
     "Property Account No", "Hotel Name", "Rooms", "VPR", "Property Address",
     "Property City", "Property County", "Property State", "Property Zip Code",
-    "Assessed Value-2023", "Market Value-2023", "Hotel Class",
+    "Assessed Value-2023", "Market Value-2023", "Hotel Class", "description",
     "Owner Name/ LLC Name", "Owner Street Address", "Owner City",
     "Owner State", "Owner ZIP", "Contact Person", "Designation"
 ]
@@ -298,7 +327,7 @@ OUTPUT_COLS_HOTEL = [
 OUTPUT_COLS_OTHER = [
     "Property Account No", "GBA", "VPU", "Property Address",
     "Property City", "Property County", "Property State", "Property Zip Code",
-    "Assessed Value-2023", "Total Market value-2023",
+    "Assessed Value-2023", "Total Market value-2023", "description",
     "Owner Name/ LLC Name", "Owner Street Address", "Owner City",
     "Owner State", "Owner ZIP"
 ]
@@ -864,12 +893,17 @@ if subj_file is not None and src_file is not None:
                 subj.columns = subj.columns.str.strip()
                 src.columns = src.columns.str.strip()
 
+                desc_col = "description"
+                
+                if desc_col in subj.columns and desc_col in src.columns and prop_type != "Hotel":
+                    subj["_desc_norm"] = subj[desc_col].apply(norm_desc)
+                    src["_desc_norm"]  = src[desc_col].apply(norm_desc)
+                    
                 for df in (subj, src):
                     if "Property Account No" in df.columns:
                         df["Property Account No"] = (
                             df["Property Account No"]
                             .astype(str)
-                            .str.replace(r"\.0$", "", regex=True)
                             .str.strip()
                         )
                     elif "Concat" in df.columns:
@@ -977,10 +1011,26 @@ if subj_file is not None and src_file is not None:
                         unsafe_allow_html=True,
                     )
 
+                    src_candidates = src
+
+                    types_with_desc_rule = ("Retail", "Warehouse")  # adjust as needed
+
+                    if (
+                        prop_type in types_with_desc_rule
+                        and "_desc_norm" in subj.columns
+                        and "_desc_norm" in src.columns
+                    ):
+                        subj_desc = srow.get("_desc_norm", "")
+                        if subj_desc:
+                            src_candidates = src_candidates[src_candidates["_desc_norm"] == subj_desc]
+                        else:
+                            src_candidates = src_candidates.iloc[0:0]
+
+
                     if use_cascading:
                         comps = find_comps_cascading(
                             srow,
-                            src,
+                            src_candidates,
                             is_hotel=is_hotel,
                             use_hotel_class_rule=use_hotel_class_rule,
                             max_comps=max_comps,
@@ -989,7 +1039,7 @@ if subj_file is not None and src_file is not None:
                     else:
                         comps = find_comps(
                             srow,
-                            src,
+                            src_candidates,
                             is_hotel=is_hotel,
                             use_hotel_class_rule=use_hotel_class_rule,
                             max_radius_miles=max_radius,
